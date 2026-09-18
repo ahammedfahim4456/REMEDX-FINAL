@@ -19,6 +19,14 @@ of Open Targets directly.
 
 from flask import Flask, request, jsonify, send_from_directory, send_file
 from flask_cors import CORS
+import sys
+import os
+
+# Ensure backend directory is in sys.path regardless of launch cwd
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+
 import sqlite3
 import json
 import time
@@ -359,11 +367,18 @@ def build_result(disease_name):
 @app.route("/")
 def serve_frontend():
     """
-    Serves the actual website when you visit http://localhost:5000
-    directly, instead of 404ing. The HTML/CSS/JS file itself is
-    untouched -- Flask just hands it to the browser as-is.
+    Serves the landing page when you visit http://localhost:5000
+    directly, instead of 404ing.
     """
     return send_from_directory(FRONTEND_DIR, FRONTEND_FILE)
+
+
+@app.route("/app")
+def serve_app():
+    """
+    Serves the functional research studio workbench when you visit http://localhost:5000/app.
+    """
+    return send_from_directory(FRONTEND_DIR, "app.html")
 
 
 @app.route("/api/repurpose")

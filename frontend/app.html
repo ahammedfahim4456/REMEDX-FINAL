@@ -1,0 +1,2238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RemedX Studio | Precision Drug Repurposing Workbench</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM: APPLE-INSPIRED PORCELAIN & BIO-EMERALD
+       ========================================================================== */
+    :root {
+      --bg-body: #FAFAF9;
+      --bg-canvas: #F0FDF4;
+      --card-white: #FFFFFF;
+      --border-subtle: rgba(15, 23, 42, 0.05);
+      --border-light: rgba(15, 23, 42, 0.08);
+      --border-hover: rgba(15, 23, 42, 0.15);
+
+      --mint-50: #F0FDF4;
+      --mint-100: #DCFCE7;
+      --mint-200: #BBF7D0;
+      --mint-300: #86EFAC;
+      --mint-400: #4ADE80;
+      --mint-500: #10B981;
+      --mint-600: #059669;
+      --mint-700: #047857;
+      --mint-800: #065F46;
+      --mint-900: #064E3B;
+
+      --emerald-dark: #0F2A1D;
+      --emerald-soft: #1C6B42;
+
+      --text-headline: #0F172A;
+      --text-body: #1E293B;
+      --text-muted: #64748B;
+      --text-light: #64748B;
+
+      --shadow-apple-subtle: 0 2px 10px rgba(15, 23, 42, 0.03);
+      --shadow-apple: 0 8px 28px -4px rgba(15, 23, 42, 0.05);
+      --shadow-apple-hover: 0 16px 40px -6px rgba(15, 23, 42, 0.08);
+
+      --radius-sm: 10px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+
+      --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    ::selection {
+      background: #BBF7D0;
+      color: #064E3B;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-body);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3, h4, .brand-title {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: var(--text-headline);
+      letter-spacing: -0.025em;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--mint-700);
+      outline-offset: 2px;
+    }
+
+    /* Ambient SoftAurora Canvas */
+    .soft-aurora-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
+      transition: opacity 0.4s ease;
+    }
+
+    .soft-aurora-container canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* ========================================================================
+       TOP NAVBAR: ULTRA-CLEAN APPLE STUDIO WORKSPACE
+       ======================================================================== */
+    .studio-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 250, 249, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.25s ease;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: #FFFFFF;
+      box-shadow: var(--shadow-apple-subtle);
+      transition: all 0.2s var(--ease-smooth);
+    }
+
+    .back-home-link:hover {
+      color: var(--text-headline);
+      background: #F1F5F9;
+      transform: translateX(-2px);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: var(--mint-700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-headline);
+      letter-spacing: -0.03em;
+    }
+
+    /* Center Segmented Chapter Tabs */
+    .header-nav-tabs {
+      display: flex;
+      background: #E2E8F0;
+      padding: 4px;
+      border-radius: var(--radius-full);
+      gap: 2px;
+    }
+
+    .chapter-tab-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s var(--ease-smooth);
+    }
+
+    .chapter-tab-pill:hover {
+      color: var(--text-headline);
+    }
+
+    .chapter-tab-pill.active {
+      background: #FFFFFF;
+      color: var(--text-headline);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-apple-export {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: var(--radius-full);
+      background: var(--text-headline);
+      color: #FFFFFF;
+      border: none;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-smooth);
+    }
+
+    .btn-apple-export:hover {
+      background: #000000;
+      transform: scale(1.02);
+    }
+
+    /* Studio Main Layout */
+    .studio-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 40px 40px 120px;
+    }
+
+    /* Clean Apple Search Panel */
+    .search-card-white {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 32px 36px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-apple);
+    }
+
+    .search-input-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .input-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      width: 20px;
+      height: 20px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input-field {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      font-size: 1rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: #F8FAFC;
+      color: var(--text-headline);
+      transition: all 0.2s ease;
+    }
+
+    .search-input-field:focus {
+      background: #FFFFFF;
+      border-color: var(--mint-500);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .btn-green-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: var(--radius-sm);
+      background: var(--mint-700);
+      color: #FFFFFF;
+      border: none;
+      font-size: 0.94rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-smooth);
+      white-space: nowrap;
+    }
+
+    .btn-green-action:hover {
+      background: var(--mint-800);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+    }
+
+    .chips-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .chip-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-right: 4px;
+    }
+
+    .story-chip {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: #F1F5F9;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .story-chip:hover {
+      background: var(--text-headline);
+      color: #FFFFFF;
+    }
+
+    .filter-row-white {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .filter-item-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-label-text {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .styled-select {
+      padding: 10px 14px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: #F8FAFC;
+      font-size: 0.88rem;
+      color: var(--text-body);
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .styled-select:focus {
+      background: #FFFFFF;
+      border-color: var(--mint-500);
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+    }
+
+    /* Chapter Panels */
+    .chapter-panel {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .chapter-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Candidates Cards Grid */
+    .candidates-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 24px;
+    }
+
+    .repurpose-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-apple);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      transition: all 0.25s var(--ease-smooth);
+    }
+
+    .repurpose-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-apple-hover);
+    }
+
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .drug-name-header {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-headline);
+      line-height: 1.25;
+    }
+
+    .drug-sub-indication {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .score-circle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      background: var(--mint-50);
+      text-align: center;
+    }
+
+    .score-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--mint-700);
+      line-height: 1;
+    }
+
+    .score-unit {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--mint-800);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-green {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: var(--mint-100);
+      color: var(--mint-800);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .pill-gene {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: #F1F5F9;
+      color: var(--text-body);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill-gene:hover {
+      background: var(--mint-50);
+      color: var(--mint-700);
+    }
+
+    /* Gemma 3 Ollama Story Box */
+    .ollama-story-box {
+      background: var(--bg-body);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text-body);
+    }
+
+    .ollama-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--mint-700);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-reexplain {
+      background: transparent;
+      border: 1px solid var(--mint-300);
+      color: var(--mint-700);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .btn-reexplain:hover {
+      background: var(--mint-100);
+      border-color: var(--mint-500);
+    }
+
+    .card-actions-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .btn-card-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: #F1F5F9;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-card-tool:hover {
+      color: var(--mint-800);
+      background: var(--mint-100);
+    }
+
+    /* Chapter 2: Molecular ADMET Lab */
+    .lab-2col-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 960px) {
+      .lab-2col-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lab-panel-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      box-shadow: var(--shadow-apple);
+    }
+
+    .panel-header-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-headline);
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .molecule-preview-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #F8FAFC;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+    }
+
+    .molecule-2d-img {
+      max-width: 240px;
+      max-height: 190px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.06));
+    }
+
+    .descriptors-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .descriptor-cell {
+      background: #F8FAFC;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .cell-key {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .cell-val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-headline);
+      margin-top: 2px;
+    }
+
+    .radar-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 14px 0;
+    }
+
+    /* Chapter 3: Polypharmacology Table */
+    .clean-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .clean-table th {
+      background: #F8FAFC;
+      padding: 14px 20px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .clean-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-body);
+      vertical-align: middle;
+    }
+
+    .clean-table tr:hover td {
+      background: #F8FAFC;
+    }
+
+    /* Sticky Drug Comparison Dock */
+    .sticky-dock {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      z-index: 90;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+      border-radius: var(--radius-full);
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.35s var(--ease-smooth);
+      pointer-events: none;
+    }
+
+    .sticky-dock.active {
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 24px;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-white-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      width: min(680px, 95%);
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-apple-hover);
+      position: relative;
+      transform: translateY(16px);
+      transition: transform 0.25s var(--ease-smooth);
+    }
+
+    .modal-backdrop.active .modal-white-card {
+      transform: translateY(0);
+    }
+
+    .btn-modal-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: #F1F5F9;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-modal-close:hover {
+      background: #E2E8F0;
+      color: var(--text-headline);
+    }
+
+    /* ========================================================================
+       APPLE-GRADE STUDIO FOOTER
+       ======================================================================== */
+    .studio-footer-container {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 60px;
+      padding: 48px 40px 40px;
+    }
+
+    .footer-telemetry-banner {
+      max-width: 1380px;
+      margin: 0 auto 36px;
+      background: var(--bg-body);
+      border-radius: var(--radius-md);
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .telemetry-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .telemetry-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: var(--text-body);
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mint-600);
+      flex-shrink: 0;
+    }
+
+    .btn-footer-diag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      background: #FFFFFF;
+      color: var(--text-headline);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-apple-subtle);
+    }
+
+    .btn-footer-diag:hover {
+      background: var(--mint-50);
+      color: var(--mint-800);
+    }
+
+    .studio-footer-bottom {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 24px;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--mint-100);
+      border-top-color: var(--mint-600);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 900px) {
+      .studio-header {
+        padding: 12px 20px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .header-nav-tabs {
+        justify-content: center;
+      }
+      .studio-wrapper {
+        padding: 24px 20px 80px;
+      }
+      .candidates-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SoftAurora Ambient Canvas -->
+  <div id="soft-aurora-bg" class="soft-aurora-container"></div>
+
+  <!-- Top Apple Minimal Studio Header -->
+  <header class="studio-header">
+    <div class="header-left">
+      <a href="index.html" class="back-home-link" title="Return to ReMedX Overview">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Overview</span>
+      </a>
+
+      <div class="brand-group">
+        <div class="brand-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 15c6.667-6 13.333 0 20-6"></path>
+            <path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"></path>
+            <path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"></path>
+          </svg>
+        </div>
+        <div class="brand-title">Studio</div>
+      </div>
+    </div>
+
+    <!-- Center: Chapter Switcher Tabs -->
+    <nav class="header-nav-tabs" aria-label="Studio Chapters">
+      <button class="chapter-tab-pill active" id="tab-step1" onclick="switchChapter('step1')">
+        <span>01 Target Genetics</span>
+      </button>
+      <button class="chapter-tab-pill" id="tab-step2" onclick="switchChapter('step2')">
+        <span>02 Molecular ADMET</span>
+      </button>
+      <button class="chapter-tab-pill" id="tab-step3" onclick="switchChapter('step3')">
+        <span>03 Polypharmacology</span>
+      </button>
+    </nav>
+
+    <!-- Right: Single Primary Export Action -->
+    <div>
+      <button class="btn-apple-export" onclick="exportDossierPdf()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+        </svg>
+        <span>Export Report</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="studio-wrapper">
+
+    <!-- ======================================================================
+         CHAPTER 1: TARGET GENETICS & DISEASE DISCOVERY
+         ====================================================================== -->
+    <section id="chapter-step1" class="chapter-panel active">
+
+      <div class="search-card-white">
+        <div class="search-input-group">
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="diseaseInput" class="search-input-field"
+              placeholder="Enter disease condition (e.g. Alzheimer's disease, Parkinson's, Glioblastoma, Crohn's...)"
+              value="Alzheimer's disease" aria-label="Enter disease condition"
+              onkeydown="if(event.key==='Enter') searchDisease()">
+          </div>
+          <button class="btn-green-action" onclick="searchDisease()">
+            <span>Discover Candidates</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div class="chips-row">
+          <span class="chip-label">Explore Presets:</span>
+          <span class="story-chip" onclick="quickDisease('Alzheimer\'s disease')">Alzheimer's disease</span>
+          <span class="story-chip" onclick="quickDisease('Parkinson disease')">Parkinson disease</span>
+          <span class="story-chip" onclick="quickDisease('Type 2 diabetes')">Type 2 diabetes</span>
+          <span class="story-chip" onclick="quickDisease('Glioblastoma')">Glioblastoma</span>
+          <span class="story-chip" onclick="quickDisease('Crohn\'s disease')">Crohn's disease</span>
+          <span class="story-chip" onclick="quickDisease('Breast cancer')">Breast cancer</span>
+          <span class="story-chip" onclick="quickDisease('Rheumatoid arthritis')">Rheumatoid arthritis</span>
+        </div>
+
+        <div class="filter-row-white">
+          <div class="filter-item-block">
+            <div class="filter-label-text">
+              <span>Minimum Confidence Threshold</span>
+              <strong id="scoreFilterDisplay" class="mono" style="color:var(--mint-700);">0.30</strong>
+            </div>
+            <input type="range" id="scoreRange" min="0" max="1" step="0.05" value="0.30"
+              aria-label="Minimum confidence score threshold" style="accent-color:var(--mint-700);"
+              oninput="updateScoreFilter(this.value)">
+          </div>
+
+          <div class="filter-item-block">
+            <div class="filter-label-text">Clinical Approval Status</div>
+            <select id="stageFilter" class="styled-select" onchange="applyFilters()">
+              <option value="ALL">All Clinical Phases</option>
+              <option value="APPROVED">Phase IV / FDA Approved Only</option>
+              <option value="PHASE3">Phase III &amp; Above</option>
+            </select>
+          </div>
+
+          <div class="filter-item-block">
+            <div class="filter-label-text">Sort Ranking</div>
+            <select id="sortSelect" class="styled-select" onchange="applyFilters()">
+              <option value="SCORE_DESC">Highest Evidence Score</option>
+              <option value="NAME_ASC">Drug Name (A-Z)</option>
+              <option value="TARGET_ASC">Target Gene</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Candidate Cards Grid -->
+      <div class="candidates-cards-grid" id="candidatesGrid">
+        <div class="spinner"></div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================
+         CHAPTER 2: MOLECULAR ADMET LABORATORY
+         ====================================================================== -->
+    <section id="chapter-step2" class="chapter-panel">
+
+      <div class="search-card-white">
+        <div class="search-input-group">
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 2v7.31"></path>
+              <path d="M14 9.3V1.99"></path>
+              <path d="M8.5 2h7"></path>
+              <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+              <path d="M5.52 16h12.96"></path>
+            </svg>
+            <input type="text" id="smilesInput" class="search-input-field mono"
+              placeholder="Enter SMILES string (e.g. CC(=O)OC1=CC=CC=C1C(=O)O for Aspirin)"
+              value="CC(=O)OC1=CC=CC=C1C(=O)O" aria-label="Enter SMILES string"
+              onkeydown="if(event.key==='Enter') analyzeCompound()">
+          </div>
+          <button class="btn-green-action" onclick="analyzeCompound()">
+            <span>Analyze Molecule</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div class="chips-row">
+          <span class="chip-label">Chemical Presets:</span>
+          <span class="story-chip" onclick="quickSmiles('Aspirin', 'CC(=O)OC1=CC=CC=C1C(=O)O')">Aspirin</span>
+          <span class="story-chip"
+            onclick="quickSmiles('Sildenafil', 'CCCC1=NN(C)C2=C1N=C(NC2=O)C3=C(OCC)C=CC(=C3)S(=O)(=O)N4CCN(C)CC4')">Sildenafil</span>
+          <span class="story-chip" onclick="quickSmiles('Metformin', 'CN(C)C(=N)N=C(N)N')">Metformin</span>
+          <span class="story-chip"
+            onclick="quickSmiles('Thalidomide', 'O=C1CCC(N2C(=O)C3=CC=CC=C3C2=O)C(=O)N1')">Thalidomide</span>
+          <span class="story-chip"
+            onclick="quickSmiles('Imatinib', 'CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5')">Imatinib</span>
+          <span class="story-chip"
+            onclick="quickSmiles('Dexamethasone', 'CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C')">Dexamethasone</span>
+        </div>
+      </div>
+
+      <div class="lab-2col-layout" id="labDashboard">
+
+        <!-- Left: 2D Topology & Descriptors -->
+        <div>
+          <div class="lab-panel-card">
+            <div class="panel-header-title">
+              <span>2D Chemical Topology</span>
+              <span class="pill-green mono" id="formulaBadge">C9H8O4</span>
+            </div>
+
+            <div class="molecule-preview-box">
+              <img id="molImage" class="molecule-2d-img"
+                src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/2244/PNG" alt="Chemical Structure">
+              <div class="mono"
+                style="font-size:0.82rem; color:var(--text-light); margin-top:10px; word-break:break-all;"
+                id="smilesDisplay">CC(=O)OC1=CC=CC=C1C(=O)O</div>
+            </div>
+
+            <div class="descriptors-metric-grid">
+              <div class="descriptor-cell">
+                <div class="cell-key">Molecular Wt</div>
+                <div class="cell-val mono" id="propMW">180.16</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">LogP</div>
+                <div class="cell-val mono" id="propLogP">1.20</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">TPSA</div>
+                <div class="cell-val mono" id="propTPSA">63.6 Å²</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">H-Donors</div>
+                <div class="cell-val mono" id="propHBD">1</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">H-Acceptors</div>
+                <div class="cell-val mono" id="propHBA">4</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">Rot. Bonds</div>
+                <div class="cell-val mono" id="propRotB">3</div>
+              </div>
+            </div>
+
+            <!-- Rules Evaluation -->
+            <div style="border-top:1px solid var(--border-subtle); padding-top:18px; margin-top:14px;">
+              <div style="font-size:0.84rem; font-weight:700; color:var(--mint-700); margin-bottom:10px;">
+                Drug-Likeness Criteria
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.86rem;">
+                <span>Lipinski Rule of 5</span>
+                <strong style="color:var(--mint-700);" id="lipinskiStatus">PASS (0 Violations)</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.86rem;">
+                <span>Veber Oral Bioavailability</span>
+                <strong style="color:var(--mint-700);" id="veberStatus">PASS</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:0.86rem;">
+                <span>PAINS Structural Alerts</span>
+                <strong style="color:var(--mint-700);" id="painsStatus">CLEAN (0 Alerts)</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Bioavailability Radar Chart -->
+        <div>
+          <div class="lab-panel-card">
+            <div class="panel-header-title">
+              <span>Bioavailability Radar Envelope</span>
+              <span class="pill-green mono" id="mpoBadge">MPO: 1.0 (Exceptional Lead)</span>
+            </div>
+
+            <div class="radar-container">
+              <canvas id="radarChartCanvas" width="340" height="300"></canvas>
+            </div>
+
+            <div
+              style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px; border-top:1px solid var(--border-subtle); padding-top:16px;">
+              <div>
+                <div style="font-size:0.8rem; color:var(--text-muted); font-weight:600; margin-bottom:2px;">
+                  Intestinal Absorption
+                </div>
+                <div style="font-size:0.95rem; font-weight:700; color:var(--text-headline);" id="admetHia">
+                  High (&gt; 85%)
+                </div>
+              </div>
+              <div>
+                <div style="font-size:0.8rem; color:var(--text-muted); font-weight:600; margin-bottom:2px;">
+                  Blood-Brain Barrier
+                </div>
+                <div style="font-size:0.95rem; font-weight:700; color:var(--text-headline);" id="admetBbb">
+                  Moderate Penetration
+                </div>
+              </div>
+              <div>
+                <div style="font-size:0.8rem; color:var(--text-muted); font-weight:600; margin-bottom:2px;">
+                  Solubility (LogS)
+                </div>
+                <div style="font-size:0.95rem; font-weight:700; color:var(--text-headline);" id="admetSol">
+                  High Solubility
+                </div>
+              </div>
+              <div>
+                <div style="font-size:0.8rem; color:var(--text-muted); font-weight:600; margin-bottom:2px;">
+                  Regulatory Pathway
+                </div>
+                <div style="font-size:0.95rem; font-weight:700; color:var(--mint-700);">
+                  FDA 505(b)(2) Fast-Track
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================================
+         CHAPTER 3: POLYPHARMACOLOGY & REVERSE LOOKUP
+         ====================================================================== -->
+    <section id="chapter-step3" class="chapter-panel">
+
+      <div class="search-card-white">
+        <div class="search-input-group">
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="reverseInput" class="search-input-field"
+              placeholder="Enter drug name (e.g. Aspirin, Metformin, Sildenafil, Atorvastatin, Celecoxib)"
+              value="Aspirin" aria-label="Enter drug name for reverse lookup"
+              onkeydown="if(event.key==='Enter') searchReverse()">
+          </div>
+          <button class="btn-green-action" onclick="searchReverse()">
+            <span>Reverse Lookup</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div class="chips-row">
+          <span class="chip-label">Drug Presets:</span>
+          <span class="story-chip" onclick="quickReverse('Aspirin')">Aspirin</span>
+          <span class="story-chip" onclick="quickReverse('Metformin')">Metformin</span>
+          <span class="story-chip" onclick="quickReverse('Sildenafil')">Sildenafil</span>
+          <span class="story-chip" onclick="quickReverse('Atorvastatin')">Atorvastatin</span>
+          <span class="story-chip" onclick="quickReverse('Celecoxib')">Celecoxib</span>
+        </div>
+      </div>
+
+      <div class="lab-panel-card">
+        <div class="panel-header-title">
+          <span>ChEMBL Off-Target Binding Landscape</span>
+          <span class="pill-green mono" id="revStatsBadge">25 Bioassay Records</span>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Target Protein</th>
+                <th>Gene Symbol</th>
+                <th>ChEMBL ID</th>
+                <th>pChEMBL Affinity</th>
+                <th>Converted Potency (nM)</th>
+                <th>Signaling Pathways</th>
+              </tr>
+            </thead>
+            <tbody id="reverseTbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       APPLE STUDIO FOOTER & TELEMETRY HUB
+       ======================================================================== -->
+  <footer class="studio-footer-container">
+    <div class="footer-telemetry-banner">
+      <div class="telemetry-badges-row">
+        <div class="telemetry-tag">
+          <span class="status-dot"></span>
+          <span>Local AI: <strong id="ollamaModelTag">gemma3:latest</strong></span>
+        </div>
+        <div class="telemetry-tag">
+          <span class="status-dot"></span>
+          <span>Cache: <strong id="cacheCountTag">22 Conditions Cached</strong></span>
+        </div>
+        <div class="telemetry-tag">
+          <span class="status-dot"></span>
+          <span>Cheminformatics: <strong>RDKit QSAR</strong></span>
+        </div>
+        <div class="telemetry-tag" id="auroraBadge" onclick="toggleAurora()" style="cursor:pointer;" title="Toggle SoftAurora Ambient Shader">
+          <span class="status-dot" style="background:var(--mint-500);"></span>
+          <span>Aurora Wave: <strong id="auroraStatusTag">ON</strong></span>
+        </div>
+      </div>
+
+      <button class="btn-footer-diag" onclick="openHealthModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>System Diagnostics</span>
+      </button>
+    </div>
+
+    <div class="studio-footer-bottom">
+      <div>
+        <strong>RemedX Studio</strong> · Precision drug repurposing engine connecting Open Targets, RDKit, and ChEMBL.
+      </div>
+      <div>
+        &copy; 2026 RemedX. Research hypotheses require independent experimental validation.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sticky Comparison Dock -->
+  <div class="sticky-dock" id="comparisonDock">
+    <span style="font-weight:700; color:var(--mint-700); font-size:0.86rem;">
+      ⚖️ Comparison Dock (<span id="dockCount">0</span>/4):
+    </span>
+    <div id="dockPillsList" style="display:flex; gap:8px;"></div>
+    <button class="btn-card-tool" style="padding:6px 14px;" onclick="clearComparison()">Clear</button>
+    <button class="btn-green-action" style="padding:6px 18px; font-size:0.82rem;"
+      onclick="openComparisonModal()">Compare Matrix</button>
+  </div>
+
+  <!-- Reactome Pathways Modal -->
+  <div class="modal-backdrop" id="pathwayModal">
+    <div class="modal-white-card">
+      <button class="btn-modal-close" onclick="closePathwayModal()">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div class="brand-icon" style="background:var(--mint-600);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </div>
+        <div>
+          <h2 style="font-size:1.35rem; font-weight:800;">Reactome Biological Pathways</h2>
+          <p style="color:var(--text-muted); font-size:0.86rem;">
+            Signaling Cascades for Target Gene: <strong id="pathwayGeneTitle" class="mono" style="color:var(--mint-700);">PTGS2</strong>
+          </p>
+        </div>
+      </div>
+      <div id="pathwayModalBody">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- System Health & Diagnostics Modal -->
+  <div class="modal-backdrop" id="healthModal">
+    <div class="modal-white-card">
+      <button class="btn-modal-close" onclick="closeHealthModal()">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div class="brand-icon" style="background:var(--mint-700);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div>
+          <h2 style="font-size:1.35rem; font-weight:800;">RemedX Subsystem Diagnostics</h2>
+          <p style="color:var(--text-muted); font-size:0.86rem;">
+            Real-time telemetry across local LLM inference and cheminformatics pipelines
+          </p>
+        </div>
+      </div>
+      <div id="healthModalBody">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-Drug Comparison Modal -->
+  <div class="modal-backdrop" id="compareModal">
+    <div class="modal-white-card" style="width:min(880px, 95%);">
+      <button class="btn-modal-close" onclick="closeCompareModal()">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div class="brand-icon" style="background:var(--mint-700);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v18"></path>
+            <path d="m3 7 9-4 9 4"></path>
+            <path d="M6 7v6a6 6 0 0 0 12 0V7"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 style="font-size:1.35rem; font-weight:800;">Candidate Drug Comparison Matrix</h2>
+          <p style="color:var(--text-muted); font-size:0.86rem;">
+            Parametric evaluation across selected therapeutic leads
+          </p>
+        </div>
+      </div>
+      <div id="compareModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Core Workbench Scripts -->
+  <script>
+    const API_BASE = window.location.origin;
+    let currentDiseaseData = null;
+    let comparisonList = [];
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkTelemetryHealth();
+      searchDisease();
+      analyzeCompound();
+
+      // Check URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetChapter = urlParams.get('chapter');
+      const targetDisease = urlParams.get('disease');
+      const targetSmiles = urlParams.get('smiles');
+
+      if (targetChapter) {
+        switchChapter(targetChapter);
+      }
+      if (targetDisease) {
+        document.getElementById('diseaseInput').value = targetDisease;
+        searchDisease();
+      }
+      if (targetSmiles) {
+        document.getElementById('smilesInput').value = targetSmiles;
+        analyzeCompound();
+      }
+    });
+
+    // ------------------------------------------------------------------------
+    // CHAPTER SWITCHER NAVIGATION
+    // ------------------------------------------------------------------------
+    function switchChapter(stepId) {
+      document.querySelectorAll('.chapter-tab-pill').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.chapter-panel').forEach(p => p.classList.remove('active'));
+
+      const activeBtn = document.getElementById(`tab-${stepId}`);
+      const activePanel = document.getElementById(`chapter-${stepId}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activePanel) activePanel.classList.add('active');
+    }
+
+    // ------------------------------------------------------------------------
+    // TELEMETRY & HEALTH
+    // ------------------------------------------------------------------------
+    async function checkTelemetryHealth() {
+      try {
+        const resp = await fetch(`${API_BASE}/api/health`);
+        const data = await resp.json();
+        if (data.services) {
+          const ollama = data.services.ollama;
+          const tag = document.getElementById('ollamaModelTag');
+          if (tag) {
+            tag.textContent = ollama?.active ? (ollama.model || 'gemma3:latest') : 'Fallback Active';
+          }
+          const cacheTag = document.getElementById('cacheCountTag');
+          if (cacheTag && data.services.cache_database) {
+            cacheTag.textContent = `${data.services.cache_database.cached_diseases || 22} Conditions Cached`;
+          }
+        }
+      } catch (err) {
+        console.warn("Telemetry notice:", err);
+      }
+    }
+
+    async function openHealthModal() {
+      const modal = document.getElementById('healthModal');
+      const body = document.getElementById('healthModalBody');
+      modal.classList.add('active');
+      body.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/health`);
+        const data = await resp.json();
+        const s = data.services || {};
+
+        body.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="background:#F8FAFC; border:1px solid rgba(15,23,42,0.06); padding:16px; border-radius:14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>Local AI Inference (Ollama)</strong>
+                <div style="font-size:0.82rem; color:var(--text-muted);">Model: <code class="mono" style="color:var(--mint-700);">${s.ollama?.model || 'gemma3:latest'}</code></div>
+              </div>
+              <span class="pill-green">${s.ollama?.status || 'ONLINE'}</span>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid rgba(15,23,42,0.06); padding:16px; border-radius:14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>Cheminformatics &amp; QSAR Pipeline</strong>
+                <div style="font-size:0.82rem; color:var(--text-muted);">Engine: <code class="mono">RDKit 2024 Topology</code></div>
+              </div>
+              <span class="pill-green">ONLINE</span>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid rgba(15,23,42,0.06); padding:16px; border-radius:14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>ChEMBL Bioactivity &amp; Open Targets</strong>
+                <div style="font-size:0.82rem; color:var(--text-muted);">Protocols: <code class="mono">GraphQL v4 &amp; REST v33</code></div>
+              </div>
+              <span class="pill-green">ONLINE</span>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid rgba(15,23,42,0.06); padding:16px; border-radius:14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>Pre-Warmed SQLite Cache</strong>
+                <div style="font-size:0.82rem; color:var(--text-muted);">Storage: <code class="mono" style="color:var(--mint-700);">${s.cache_database?.cached_diseases || 22} Conditions Cached</code></div>
+              </div>
+              <span class="pill-green">ONLINE</span>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        body.innerHTML = `<div style="color:#E11D48;">Failed to load diagnostics: ${err.message}</div>`;
+      }
+    }
+
+    function closeHealthModal() {
+      document.getElementById('healthModal').classList.remove('active');
+    }
+
+    // ------------------------------------------------------------------------
+    // CHAPTER 1: DISEASE REPURPOSING LOGIC
+    // ------------------------------------------------------------------------
+    function quickDisease(name) {
+      document.getElementById('diseaseInput').value = name;
+      searchDisease();
+    }
+
+    async function searchDisease() {
+      const query = document.getElementById('diseaseInput').value.trim();
+      if (!query) return;
+
+      const grid = document.getElementById('candidatesGrid');
+      grid.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/repurpose?disease=${encodeURIComponent(query)}`);
+        const data = await resp.json();
+
+        if (data.error) {
+          grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);"><h3>${data.error}</h3></div>`;
+          return;
+        }
+
+        currentDiseaseData = data;
+        applyFilters();
+      } catch (err) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#E11D48;">Failed to fetch candidates: ${err.message}</div>`;
+      }
+    }
+
+    function updateScoreFilter(val) {
+      document.getElementById('scoreFilterDisplay').textContent = parseFloat(val).toFixed(2);
+      applyFilters();
+    }
+
+    function applyFilters() {
+      if (!currentDiseaseData) return;
+
+      const minScore = parseFloat(document.getElementById('scoreRange').value);
+      const stageFilter = document.getElementById('stageFilter').value;
+      const sortBy = document.getElementById('sortSelect').value;
+
+      let list = [...(currentDiseaseData.candidates || [])].filter(c => {
+        if ((c.confidenceScore || 0) < minScore) return false;
+        if (stageFilter === 'APPROVED' && !c.clinicalStage?.toLowerCase().includes('approved') && !c.clinicalStage?.toLowerCase().includes('phase 4')) return false;
+        if (stageFilter === 'PHASE3' && (c.clinicalStage?.toLowerCase().includes('phase 1') || c.clinicalStage?.toLowerCase().includes('phase 2'))) return false;
+        return true;
+      });
+
+      if (sortBy === 'SCORE_DESC') {
+        list.sort((a, b) => (b.confidenceScore || 0) - (a.confidenceScore || 0));
+      } else if (sortBy === 'NAME_ASC') {
+        list.sort((a, b) => (a.drugName || '').localeCompare(b.drugName || ''));
+      } else if (sortBy === 'TARGET_ASC') {
+        list.sort((a, b) => (a.targetGene || '').localeCompare(b.targetGene || ''));
+      }
+
+      const grid = document.getElementById('candidatesGrid');
+      if (list.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">No candidates match your active filter settings.</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map((c, i) => {
+        const associated = (c.associatedDiseases || []).slice(0, 2).join(', ') || 'Original Indication';
+        return `
+          <div class="repurpose-card" id="card-${i}">
+            <div>
+              <div class="card-top-row">
+                <div>
+                  <div class="drug-name-header">${c.drugName}</div>
+                  <div class="drug-sub-indication">Known for: <strong>${associated}</strong></div>
+                </div>
+                <div class="score-circle">
+                  <span class="score-val">${(c.confidenceScore || 0).toFixed(2)}</span>
+                  <span class="score-unit">Evidence</span>
+                </div>
+              </div>
+
+              <div class="tags-container" style="margin-top:14px;">
+                <span class="pill-green">● ${c.clinicalStage || 'Phase IV Approved'}</span>
+                <span class="pill-gene" onclick="openPathwayModal('${c.targetGene}')" title="Click to view Reactome pathways">
+                  🧬 Target: <strong>${c.targetGene}</strong> (${c.targetFullName || ''})
+                </span>
+              </div>
+
+              <div class="ollama-story-box" style="margin-top:16px;">
+                <div class="ollama-box-header">
+                  <span>🤖 AI Rationale (Gemma 3)</span>
+                  <button class="btn-reexplain" onclick="reexplainCard('${encodeURIComponent(c.drugName)}', '${encodeURIComponent(c.targetGene)}', '${encodeURIComponent(c.targetFullName || '')}', ${c.confidenceScore}, '${encodeURIComponent(c.clinicalStage || '')}', '${encodeURIComponent(associated)}', 'ai-text-${i}')">Deepen Rationale</button>
+                </div>
+                <div id="ai-text-${i}">${c.aiExplanation || 'Hypothesis based on verified target interaction.'}</div>
+              </div>
+            </div>
+
+            <div class="card-actions-strip">
+              <button class="btn-card-tool" onclick="sendToChemi('${c.drugName}')">⚗️ ADMET</button>
+              <button class="btn-card-tool" onclick="sendToReverse('${c.drugName}')">🔁 Off-Targets</button>
+              <button class="btn-card-tool" onclick="openPathwayModal('${c.targetGene}')">🧬 Pathway</button>
+              <button class="btn-card-tool" onclick="toggleCompare('${c.drugName}', '${c.targetGene}', ${(c.confidenceScore || 0).toFixed(2)}, '${c.clinicalStage || 'Approved'}', '${associated}')">⚖️ Compare</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function reexplainCard(drug, gene, targetName, score, stage, origUse, elemId) {
+      const elem = document.getElementById(elemId);
+      if (!elem) return;
+      const oldText = elem.innerHTML;
+      elem.innerHTML = '<span style="color:var(--mint-700);">✨ Ollama (gemma3:latest) generating fresh mechanistic reasoning...</span>';
+
+      const disease = currentDiseaseData?.resolvedName || document.getElementById('diseaseInput').value;
+
+      try {
+        const url = `${API_BASE}/api/explain?drug=${drug}&disease=${encodeURIComponent(disease)}&target_gene=${gene}&target_name=${targetName}&score=${score}&stage=${stage}&original_use=${origUse}`;
+        const resp = await fetch(url);
+        const data = await resp.json();
+        if (data.explanation) {
+          elem.innerHTML = `${data.explanation} <span style="font-size:0.72rem; color:var(--text-light); display:block; margin-top:4px;">Generated via ${data.model} in ${data.latency_seconds || 0}s</span>`;
+        } else {
+          elem.innerHTML = oldText;
+        }
+      } catch (err) {
+        elem.innerHTML = oldText;
+      }
+    }
+
+    function exportDossierPdf() {
+      const disease = currentDiseaseData?.resolvedName || document.getElementById('diseaseInput').value.trim();
+      if (!disease) return;
+      window.open(`${API_BASE}/api/export-pdf?disease=${encodeURIComponent(disease)}`, '_blank');
+    }
+
+    // ------------------------------------------------------------------------
+    // CHAPTER 2: MOLECULE & ADMET LABORATORY LOGIC
+    // ------------------------------------------------------------------------
+    function quickSmiles(name, smiles) {
+      document.getElementById('smilesInput').value = smiles;
+      analyzeCompound();
+    }
+
+    function sendToChemi(drugName) {
+      switchChapter('step2');
+      const presets = {
+        'aspirin': 'CC(=O)OC1=CC=CC=C1C(=O)O',
+        'sildenafil': 'CCCC1=NN(C)C2=C1N=C(NC2=O)C3=C(OCC)C=CC(=C3)S(=O)(=O)N4CCN(C)CC4',
+        'metformin': 'CN(C)C(=N)N=C(N)N',
+        'thalidomide': 'O=C1CCC(N2C(=O)C3=CC=CC=C3C2=O)C(=O)N1',
+        'imatinib': 'CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5',
+        'dexamethasone': 'CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C'
+      };
+      const key = drugName.toLowerCase();
+      document.getElementById('smilesInput').value = presets[key] || 'CC(=O)OC1=CC=CC=C1C(=O)O';
+      analyzeCompound();
+    }
+
+    async function analyzeCompound() {
+      const smiles = document.getElementById('smilesInput').value.trim();
+      if (!smiles) return;
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/compound/analyze?smiles=${encodeURIComponent(smiles)}`);
+        const data = await resp.json();
+
+        if (data.error) {
+          alert("Cheminformatics notice: " + data.error);
+          return;
+        }
+
+        renderChemiData(data);
+      } catch (err) {
+        console.warn("Chemi error:", err);
+      }
+    }
+
+    function renderChemiData(data) {
+      const desc = data.descriptors || {};
+      const ev = data.evaluation || {};
+      const admet = ev.admet || {};
+
+      document.getElementById('formulaBadge').textContent = desc.formula || 'N/A';
+      document.getElementById('smilesDisplay').textContent = data.smiles || '';
+      document.getElementById('propMW').textContent = (desc.mw || 0).toFixed(2);
+      document.getElementById('propLogP').textContent = (desc.logp || 0).toFixed(2);
+      document.getElementById('propTPSA').textContent = (desc.tpsa || 0).toFixed(1) + ' Å²';
+      document.getElementById('propHBD').textContent = desc.hbd ?? '0';
+      document.getElementById('propHBA').textContent = desc.hba ?? '0';
+      document.getElementById('propRotB').textContent = desc.rotb ?? '0';
+
+      if (desc.image_url) {
+        document.getElementById('molImage').src = desc.image_url;
+      }
+
+      document.getElementById('lipinskiStatus').textContent = ev.lipinski?.pass ? 'PASS (0 Violations)' : 'FAIL';
+      document.getElementById('veberStatus').textContent = ev.veber?.pass ? 'PASS' : 'FAIL';
+      document.getElementById('painsStatus').textContent = !data.alerts?.pains_flag ? 'CLEAN (0 Alerts)' : 'ALERT';
+      document.getElementById('mpoBadge').textContent = `MPO: ${ev.mpo?.desirability_index || 1.0} (${ev.mpo?.rating || 'Exceptional'})`;
+
+      document.getElementById('admetHia').textContent = admet.hia_absorption || 'High (> 85%)';
+      document.getElementById('admetBbb').textContent = admet.bbb_permeability || 'Moderate Penetration';
+      document.getElementById('admetSol').textContent = admet.solubility_label || 'High Solubility';
+
+      // Draw Radar
+      const radar = data.radar_data || {};
+      drawLightRadar(radar.labels || ["MW/500", "LogP/5", "HBD/5", "HBA/10", "TPSA/140", "RotB/10"], radar.values || [0.36, 0.24, 0.2, 0.4, 0.45, 0.3]);
+    }
+
+    function drawLightRadar(labels, values) {
+      const canvas = document.getElementById('radarChartCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width, h = canvas.height;
+      const cx = w / 2, cy = h / 2;
+      const radius = 100;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const numAxes = labels.length;
+      const angleStep = (Math.PI * 2) / numAxes;
+
+      for (let lvl = 1; lvl <= 4; lvl++) {
+        const r = (radius / 4) * lvl;
+        ctx.beginPath();
+        for (let i = 0; i < numAxes; i++) {
+          const a = i * angleStep - Math.PI / 2;
+          const x = cx + r * Math.cos(a);
+          const y = cy + r * Math.sin(a);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = lvl === 4 ? 'rgba(16, 185, 129, 0.35)' : 'rgba(226, 232, 240, 0.8)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      ctx.font = '11px "Instrument Sans", sans-serif';
+      ctx.fillStyle = '#334155';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let i = 0; i < numAxes; i++) {
+        const a = i * angleStep - Math.PI / 2;
+        const x = cx + radius * Math.cos(a);
+        const y = cy + radius * Math.sin(a);
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#E2E8F0';
+        ctx.stroke();
+
+        const lx = cx + (radius + 22) * Math.cos(a);
+        const ly = cy + (radius + 18) * Math.sin(a);
+        ctx.fillText(labels[i], lx, ly);
+      }
+
+      // Golden Boundary (1.0)
+      ctx.beginPath();
+      for (let i = 0; i < numAxes; i++) {
+        const a = i * angleStep - Math.PI / 2;
+        const x = cx + radius * Math.cos(a);
+        const y = cy + radius * Math.sin(a);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = '#F59E0B';
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Data Polygon
+      ctx.beginPath();
+      for (let i = 0; i < numAxes; i++) {
+        const val = Math.min(Math.max(values[i] || 0.1, 0.05), 1.35);
+        const r = radius * (val / 1.0);
+        const a = i * angleStep - Math.PI / 2;
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.22)';
+      ctx.fill();
+      ctx.strokeStyle = '#10B981';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      for (let i = 0; i < numAxes; i++) {
+        const val = Math.min(Math.max(values[i] || 0.1, 0.05), 1.35);
+        const r = radius * (val / 1.0);
+        const a = i * angleStep - Math.PI / 2;
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+        ctx.strokeStyle = '#047857';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // CHAPTER 3: POLYPHARMACOLOGY & REVERSE LOOKUP LOGIC
+    // ------------------------------------------------------------------------
+    function quickReverse(drug) {
+      document.getElementById('reverseInput').value = drug;
+      searchReverse();
+    }
+
+    function sendToReverse(drugName) {
+      switchChapter('step3');
+      document.getElementById('reverseInput').value = drugName;
+      searchReverse();
+    }
+
+    async function searchReverse() {
+      const query = document.getElementById('reverseInput').value.trim();
+      if (!query) return;
+
+      const tbody = document.getElementById('reverseTbody');
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;"><div class="spinner"></div></td></tr>';
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/reverse-lookup?query=${encodeURIComponent(query)}`);
+        const data = await resp.json();
+
+        document.getElementById('revStatsBadge').textContent = `${data.total_bioactivities_found || 0} Bioassay Records · ${data.chembl_id || ''}`;
+
+        const targets = data.top_off_targets || [];
+        if (targets.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No off-target binding affinities found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = targets.map(t => `
+          <tr>
+            <td><strong>${t.target_name}</strong></td>
+            <td><span class="mono" style="color:var(--mint-700); font-weight:700;">${t.gene_symbol}</span></td>
+            <td><code class="mono" style="font-size:0.8rem;">${t.target_chembl_id}</code></td>
+            <td><span class="mono" style="color:var(--mint-600); font-weight:700;">${(t.pchembl || 0).toFixed(2)}</span></td>
+            <td><span class="mono">${(t.ic50_nm || 0).toFixed(1)} nM</span></td>
+            <td>
+              <button class="btn-card-tool" onclick="openPathwayModal('${t.gene_symbol}')">
+                🧬 View Reactome
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color:#E11D48; text-align:center;">Lookup failed: ${err.message}</td></tr>`;
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // REACTOME PATHWAYS MODAL
+    // ------------------------------------------------------------------------
+    async function openPathwayModal(gene) {
+      const modal = document.getElementById('pathwayModal');
+      const body = document.getElementById('pathwayModalBody');
+      document.getElementById('pathwayGeneTitle').textContent = gene;
+      modal.classList.add('active');
+      body.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/pathways?gene=${encodeURIComponent(gene)}`);
+        const data = await resp.json();
+        const pathways = data.pathways || [];
+
+        if (pathways.length === 0) {
+          body.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted);">No annotated Reactome pathways for gene ${gene}.</div>`;
+          return;
+        }
+
+        body.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            ${pathways.map(p => `
+              <div style="background:#F8FAFC; border:1px solid rgba(15,23,42,0.06); border-radius:14px; padding:16px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-weight:700; color:var(--text-headline); font-size:0.95rem;">${p.name}</div>
+                  <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;" class="mono">ID: ${p.id} · Homo sapiens</div>
+                </div>
+                <a href="${p.url || `https://reactome.org/content/detail/${p.id}`}" target="_blank" class="btn-card-tool" style="text-decoration:none;">
+                  <span>Diagram ↗</span>
+                </a>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch (err) {
+        body.innerHTML = `<div style="color:#E11D48;">Failed to load pathways: ${err.message}</div>`;
+      }
+    }
+
+    function closePathwayModal() {
+      document.getElementById('pathwayModal').classList.remove('active');
+    }
+
+    // ------------------------------------------------------------------------
+    // DRUG COMPARISON DOCK
+    // ------------------------------------------------------------------------
+    function toggleCompare(name, gene, score, phase, origUse) {
+      const idx = comparisonList.findIndex(d => d.name === name);
+      if (idx >= 0) {
+        comparisonList.splice(idx, 1);
+      } else {
+        if (comparisonList.length >= 4) {
+          alert("You can compare up to 4 drugs simultaneously.");
+          return;
+        }
+        comparisonList.push({ name, gene, score, phase, origUse });
+      }
+      renderDock();
+    }
+
+    function renderDock() {
+      const dock = document.getElementById('comparisonDock');
+      const list = document.getElementById('dockPillsList');
+      const count = document.getElementById('dockCount');
+
+      count.textContent = comparisonList.length;
+      if (comparisonList.length > 0) {
+        dock.classList.add('active');
+      } else {
+        dock.classList.remove('active');
+      }
+
+      list.innerHTML = comparisonList.map((d, i) => `
+        <div style="background:var(--mint-50); padding:4px 14px; border-radius:9999px; font-size:0.82rem; font-weight:700; color:var(--mint-700); display:flex; align-items:center; gap:6px;">
+          <span>${d.name}</span>
+          <span style="cursor:pointer; color:#E11D48;" onclick="removeCompare(${i})">✕</span>
+        </div>
+      `).join('');
+    }
+
+    function removeCompare(i) {
+      comparisonList.splice(i, 1);
+      renderDock();
+    }
+
+    function clearComparison() {
+      comparisonList = [];
+      renderDock();
+    }
+
+    function openComparisonModal() {
+      if (comparisonList.length === 0) return;
+      const modal = document.getElementById('compareModal');
+      const body = document.getElementById('compareModalBody');
+      modal.classList.add('active');
+
+      body.innerHTML = `
+        <div style="overflow-x:auto;">
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Parametric Attribute</th>
+                ${comparisonList.map(d => `<th style="color:var(--mint-700);">${d.name}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Target Gene</strong></td>
+                ${comparisonList.map(d => `<td class="mono" style="font-weight:700;">${d.gene}</td>`).join('')}
+              </tr>
+              <tr>
+                <td><strong>Evidence Score</strong></td>
+                ${comparisonList.map(d => `<td class="mono" style="color:var(--mint-600); font-weight:700;">${d.score} / 1.0</td>`).join('')}
+              </tr>
+              <tr>
+                <td><strong>Clinical Phase</strong></td>
+                ${comparisonList.map(d => `<td><span class="pill-green">${d.phase}</span></td>`).join('')}
+              </tr>
+              <tr>
+                <td><strong>Known Indication</strong></td>
+                ${comparisonList.map(d => `<td>${d.origUse}</td>`).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compareModal').classList.remove('active');
+    }
+  </script>
+
+  <!-- WebGL SoftAurora Engine -->
+  <script type="module">
+    import { Renderer, Program, Mesh, Triangle } from 'https://esm.sh/ogl';
+
+    function hexToVec3(hex) {
+      const h = hex.replace('#', '');
+      return [
+        parseInt(h.slice(0, 2), 16) / 255,
+        parseInt(h.slice(2, 4), 16) / 255,
+        parseInt(h.slice(4, 6), 16) / 255
+      ];
+    }
+
+    const vertexShader = `
+attribute vec2 uv;
+attribute vec2 position;
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = vec4(position, 0, 1);
+}
+`;
+
+    const fragmentShader = `
+precision highp float;
+
+uniform float uTime;
+uniform vec3 uResolution;
+uniform float uSpeed;
+uniform float uScale;
+uniform float uBrightness;
+uniform vec3 uColor1;
+uniform vec3 uColor2;
+uniform float uNoiseFreq;
+uniform float uNoiseAmp;
+uniform float uBandHeight;
+uniform float uBandSpread;
+uniform float uOctaveDecay;
+uniform float uLayerOffset;
+uniform float uColorSpeed;
+uniform vec2 uMouse;
+uniform float uMouseInfluence;
+uniform bool uEnableMouse;
+
+#define TAU 6.28318
+
+vec3 gradientHash(vec3 p) {
+  p = vec3(
+    dot(p, vec3(127.1, 311.7, 234.6)),
+    dot(p, vec3(269.5, 183.3, 198.3)),
+    dot(p, vec3(169.5, 283.3, 156.9))
+  );
+  vec3 h = fract(sin(p) * 43758.5453123);
+  float phi = acos(2.0 * h.x - 1.0);
+  float theta = TAU * h.y;
+  return vec3(cos(theta) * sin(phi), sin(theta) * cos(phi), cos(phi));
+}
+
+float quinticSmooth(float t) {
+  float t2 = t * t;
+  float t3 = t * t2;
+  return 6.0 * t3 * t2 - 15.0 * t2 * t2 + 10.0 * t3;
+}
+
+vec3 cosineGradient(float t, vec3 a, vec3 b, vec3 c, vec3 d) {
+  return a + b * cos(TAU * (c * t + d));
+}
+
+float perlin3D(float amplitude, float frequency, float px, float py, float pz) {
+  float x = px * frequency;
+  float y = py * frequency;
+
+  float fx = floor(x); float fy = floor(y); float fz = floor(pz);
+  float cx = ceil(x);  float cy = ceil(y);  float cz = ceil(pz);
+
+  vec3 g000 = gradientHash(vec3(fx, fy, fz));
+  vec3 g100 = gradientHash(vec3(cx, fy, fz));
+  vec3 g010 = gradientHash(vec3(fx, cy, fz));
+  vec3 g110 = gradientHash(vec3(cx, cy, fz));
+  vec3 g001 = gradientHash(vec3(fx, fy, cz));
+  vec3 g101 = gradientHash(vec3(cx, fy, cz));
+  vec3 g011 = gradientHash(vec3(fx, cy, cz));
+  vec3 g111 = gradientHash(vec3(cx, cy, cz));
+
+  float d000 = dot(g000, vec3(x - fx, y - fy, pz - fz));
+  float d100 = dot(g100, vec3(x - cx, y - fy, pz - fz));
+  float d010 = dot(g010, vec3(x - fx, y - cy, pz - fz));
+  float d110 = dot(g110, vec3(x - cx, y - cy, pz - fz));
+  float d001 = dot(g001, vec3(x - fx, y - fy, pz - cz));
+  float d101 = dot(g101, vec3(x - cx, y - fy, pz - cz));
+  float d011 = dot(g011, vec3(x - fx, y - cy, pz - cz));
+  float d111 = dot(g111, vec3(x - cx, y - cy, pz - cz));
+
+  float sx = quinticSmooth(x - fx);
+  float sy = quinticSmooth(y - fy);
+  float sz = quinticSmooth(pz - fz);
+
+  float lx00 = mix(d000, d100, sx);
+  float lx10 = mix(d010, d110, sx);
+  float lx01 = mix(d001, d101, sx);
+  float lx11 = mix(d011, d111, sx);
+
+  float ly0 = mix(lx00, lx10, sy);
+  float ly1 = mix(lx01, lx11, sy);
+
+  return amplitude * mix(ly0, ly1, sz);
+}
+
+float auroraGlow(float t, vec2 shift) {
+  vec2 uv = gl_FragCoord.xy / uResolution.y;
+  uv += shift;
+
+  float noiseVal = 0.0;
+  float freq = uNoiseFreq;
+  float amp = uNoiseAmp;
+  vec2 samplePos = uv * uScale;
+
+  for (float i = 0.0; i < 3.0; i += 1.0) {
+    noiseVal += perlin3D(amp, freq, samplePos.x, samplePos.y, t);
+    amp *= uOctaveDecay;
+    freq *= 2.0;
+  }
+
+  float yBand = uv.y * 10.0 - uBandHeight * 10.0;
+  return 0.3 * max(exp(uBandSpread * (1.0 - 1.1 * abs(noiseVal + yBand))), 0.0);
+}
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / uResolution.xy;
+  float t = uSpeed * 0.4 * uTime;
+
+  vec2 shift = vec2(0.0);
+  if (uEnableMouse) {
+    shift = (uMouse - 0.5) * uMouseInfluence;
+  }
+
+  float glow1 = auroraGlow(t, shift);
+  float glow2 = auroraGlow(t + uLayerOffset, shift);
+  vec3 gradient1 = cosineGradient(uv.x + uTime * uSpeed * 0.2 * uColorSpeed, vec3(0.5), vec3(0.5), vec3(1.0), vec3(0.3, 0.20, 0.20));
+  vec3 gradient2 = cosineGradient(uv.x + uTime * uSpeed * 0.1 * uColorSpeed, vec3(0.5), vec3(0.5), vec3(2.0, 1.0, 0.0), vec3(0.5, 0.20, 0.25));
+
+  vec3 col = 0.99 * glow1 * gradient1 * uColor1;
+  col += 0.99 * glow2 * gradient2 * uColor2;
+
+  col *= uBrightness;
+  float alpha = clamp(length(col), 0.0, 1.0);
+  gl_FragColor = vec4(col, alpha);
+}
+`;
+
+    let auroraActive = true;
+    let program = null;
+    let currentMouse = [0.5, 0.5];
+    let targetMouse = [0.5, 0.5];
+
+    const container = document.getElementById('soft-aurora-bg');
+    if (container) {
+      try {
+        const renderer = new Renderer({ alpha: true, premultipliedAlpha: false });
+        const gl = renderer.gl;
+        gl.clearColor(0, 0, 0, 0);
+
+        function handleMouseMove(e) {
+          targetMouse = [
+            e.clientX / window.innerWidth,
+            1.0 - (e.clientY / window.innerHeight)
+          ];
+        }
+
+        window.addEventListener('mousemove', handleMouseMove);
+
+        function resize() {
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          renderer.setSize(w, h);
+          if (program) {
+            program.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height];
+          }
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const geometry = new Triangle(gl);
+        program = new Program(gl, {
+          vertex: vertexShader,
+          fragment: fragmentShader,
+          uniforms: {
+            uTime: { value: 0 },
+            uResolution: { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
+            uSpeed: { value: 0.55 },
+            uScale: { value: 1.45 },
+            uBrightness: { value: 0.95 },
+            uColor1: { value: hexToVec3('#10B981') },
+            uColor2: { value: hexToVec3('#06B6D4') },
+            uNoiseFreq: { value: 2.4 },
+            uNoiseAmp: { value: 1.0 },
+            uBandHeight: { value: 0.48 },
+            uBandSpread: { value: 1.1 },
+            uOctaveDecay: { value: 0.12 },
+            uLayerOffset: { value: 0.15 },
+            uColorSpeed: { value: 0.9 },
+            uMouse: { value: new Float32Array([0.5, 0.5]) },
+            uMouseInfluence: { value: 0.25 },
+            uEnableMouse: { value: true }
+          }
+        });
+
+        const mesh = new Mesh(gl, { geometry, program });
+        container.appendChild(gl.canvas);
+
+        function update(time) {
+          requestAnimationFrame(update);
+          if (!auroraActive) return;
+
+          program.uniforms.uTime.value = time * 0.001;
+          currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
+          currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
+          program.uniforms.uMouse.value[0] = currentMouse[0];
+          program.uniforms.uMouse.value[1] = currentMouse[1];
+
+          renderer.render({ scene: mesh });
+        }
+        requestAnimationFrame(update);
+
+        window.toggleAurora = function () {
+          auroraActive = !auroraActive;
+          const bg = document.getElementById('soft-aurora-bg');
+          const tag = document.getElementById('auroraStatusTag');
+          if (bg) bg.style.opacity = auroraActive ? '0.5' : '0';
+          if (tag) tag.innerText = auroraActive ? 'ON' : 'OFF';
+        };
+      } catch (err) {
+        console.warn("SoftAurora WebGL notice:", err);
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -36,6 +36,16 @@ build/
 Thumbs.db
 desktop.ini
 
+# AI Agent & Assistant directories
+.agent/
+.agents/
+.codex/
+.gemini/
+.impeccable/
+.opencode/
+.pi/
+.qoder/
+
 # Temporary archives and backups
 *.zip
 *.tar.gz
@@ -45,3 +55,4 @@ remedx-ui-package.zip
 * (2).*
 * (3).*
 * (4).*
+
