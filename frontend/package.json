@@ -1,0 +1,14 @@
+{
+  "name": "remedx-frontend",
+  "version": "1.0.0",
+  "description": "ReMedX Drug Repurposing Frontend with SoftAurora Shader Component",
+  "main": "components/SoftAurora/index.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "ogl": "^1.0.11",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

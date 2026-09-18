@@ -1,0 +1,47 @@
+# Environment and secrets
+.env
+.env.local
+*.env
+
+# SQLite and local cache databases
+*.db
+*.sqlite
+*.sqlite3
+repurpose_cache.db
+
+# Python bytecode and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env/
+
+# Node & Frontend dependencies
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# Testing & logs
+.pytest_cache/
+*.log
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary archives and backups
+*.zip
+*.tar.gz
+remedx-ui-package/
+remedx-ui-package.zip
+* (1).*
+* (2).*
+* (3).*
+* (4).*

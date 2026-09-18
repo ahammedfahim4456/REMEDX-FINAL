@@ -1,0 +1,101 @@
+"""Quick test script for all three new backend API endpoints."""
+import requests
+import json
+
+BASE = "http://localhost:5000"
+
+print("=" * 70)
+print("MODULE B: Compound Analyzer — Aspirin (SMILES)")
+print("=" * 70)
+r = requests.get(f"{BASE}/api/compound/analyze", params={"smiles": "CC(=O)OC1=CC=CC=C1C(=O)O"}, timeout=15)
+d = r.json()
+desc = d["descriptors"]
+ev = d["evaluation"]
+print(f"  SMILES:          {d['smiles']}")
+print(f"  Formula:         {desc['formula']}")
+print(f"  MW:              {desc['mw']} Da")
+print(f"  LogP:            {desc['logp']}")
+print(f"  HBD / HBA:       {desc['hbd']} / {desc['hba']}")
+print(f"  TPSA:            {desc['tpsa']} A^2")
+print(f"  Rotatable Bonds: {desc['rotb']}")
+print(f"  PubChem CID:     {desc['cid']}")
+print(f"  2D Image URL:    {desc['image_url']}")
+print(f"  ---")
+print(f"  Lipinski Pass:   {ev['lipinski']['pass']} (violations: {ev['lipinski']['violations_count']})")
+print(f"  Veber Pass:      {ev['veber']['pass']}")
+print(f"  Ghose Pass:      {ev['ghose']['pass']}")
+print(f"  ---")
+print(f"  HIA Absorption:  {ev['admet']['hia_absorption']}")
+print(f"  BBB Permeation:  {ev['admet']['bbb_permeability']}")
+print(f"  Solubility:      {ev['admet']['solubility_label']}")
+print(f"  CYP Clearance:   {ev['admet']['cyp_clearance']}")
+print(f"  hERG Cardiotox:  {ev['admet']['herg_cardiotox']}")
+print(f"  ---")
+print(f"  Applicability:   {ev['applicability']['domain']}")
+print(f"  Confidence:      {ev['applicability']['confidence_score']}")
+print(f"  MPO Desirability:{ev['mpo']['desirability_index']} — {ev['mpo']['rating']}")
+print(f"  PAINS Flag:      {d['alerts']['pains_flag']}")
+print(f"  Brenk Flag:      {d['alerts']['brenk_flag']}")
+print(f"  ---")
+print(f"  OECD:            {d['regulatory_dossier']['oecd_validation_principles']}")
+print(f"  ICH M7:          {d['regulatory_dossier']['ich_m7_alert_status']}")
+print(f"  Radar Data:      {d['radar_data']['values']}")
+
+print()
+print("=" * 70)
+print("MODULE C: Reverse Lookup — Aspirin off-target kinetics")
+print("=" * 70)
+r2 = requests.get(f"{BASE}/api/reverse-lookup", params={"query": "aspirin"}, timeout=30)
+d2 = r2.json()
+print(f"  Drug:            {d2['drug_name']} ({d2['chembl_id']})")
+print(f"  Bioactivities:   {d2['total_bioactivities_found']} assay measurements")
+print(f"  Off-Targets:")
+for t in d2["top_off_targets"]:
+    print(f"    - {t['target_name']} ({t['gene_symbol']}) | pChEMBL: {t['pchembl']} | IC50: {t['ic50_nm']} nM")
+print(f"  Novel Repurposing Indications:")
+for h in d2["novel_repurposing_indications"]:
+    print(f"    - {h['potential_disease']} via {h['target_gene']} (OT score: {h['open_targets_score']})")
+print(f"  Scatter Plot Points: {len(d2['scatter_plot']['x'])} data points")
+
+print()
+print("=" * 70)
+print("PATHWAYS: Reactome — PTGS2 (COX-2)")
+print("=" * 70)
+r3 = requests.get(f"{BASE}/api/pathways", params={"gene": "PTGS2"}, timeout=10)
+d3 = r3.json()
+print(f"  Gene: {d3['gene']}")
+for p in d3["pathways"]:
+    print(f"    - [{p['id']}] {p['name']}")
+
+print()
+print("=" * 70)
+print("MODULE B: Compound Analyzer — Sildenafil")
+print("=" * 70)
+r4 = requests.get(f"{BASE}/api/compound/analyze", params={"smiles": "CCCC1=NN(C)C2=C1N=C(NC2=O)C3=C(OCC)C=CC(=C3)S(=O)(=O)N4CCN(C)CC4"}, timeout=15)
+d4 = r4.json()
+desc4 = d4["descriptors"]
+ev4 = d4["evaluation"]
+print(f"  SMILES:          {d4['smiles'][:50]}...")
+print(f"  MW:              {desc4['mw']} Da")
+print(f"  LogP:            {desc4['logp']}")
+print(f"  Lipinski Pass:   {ev4['lipinski']['pass']} (violations: {ev4['lipinski']['violations_count']})")
+print(f"  HIA Absorption:  {ev4['admet']['hia_absorption']}")
+print(f"  BBB Permeation:  {ev4['admet']['bbb_permeability']}")
+print(f"  MPO Desirability:{ev4['mpo']['desirability_index']} — {ev4['mpo']['rating']}")
+
+print()
+print("=" * 70)
+print("MODULE A: Disease Explorer (existing) — Alzheimer's disease")
+print("=" * 70)
+r5 = requests.get(f"{BASE}/api/repurpose", params={"disease": "Alzheimer's disease"}, timeout=60)
+d5 = r5.json()
+print(f"  Disease:         {d5.get('resolvedName', 'N/A')}")
+print(f"  EFO ID:          {d5.get('efoId', 'N/A')}")
+print(f"  Candidates:      {len(d5.get('candidates', []))}")
+print(f"  AI Powered:      {d5.get('aiPowered', False)}")
+print(f"  Cached:          {d5.get('_cached', False)}")
+for c in d5.get("candidates", [])[:3]:
+    print(f"    - {c['drugName']} via {c['targetGene']} (score: {c['confidenceScore']})")
+
+print()
+print("ALL ENDPOINTS VERIFIED SUCCESSFULLY")

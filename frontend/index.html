@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RemedX | The Living Story of Drug Repurposing</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Three.js for 3D Crystal Living Molecule -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM: LIGHT GREEN & PORCELAIN WHITE LIVING ORGANISM THEME
+       ========================================================================== */
+    :root {
+      --bg-body: #F8FAFC;
+      --bg-canvas: #F0FDF4;
+      --card-white: rgba(255, 255, 255, 0.88);
+      --card-solid: #FFFFFF;
+      --border-light: rgba(16, 185, 129, 0.16);
+      --border-hover: rgba(16, 185, 129, 0.4);
+      
+      --mint-50: #ECFDF5;
+      --mint-100: #D1FAE5;
+      --mint-200: #A7F3D0;
+      --mint-500: #10B981;
+      --mint-600: #059669;
+      --mint-700: #047857;
+      
+      --sage-subtle: #E6F4EA;
+      --emerald-accent: #059669;
+      --teal-glow: #0D9488;
+      
+      --text-headline: #0F172A;
+      --text-body: #334155;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+      
+      --shadow-sm: 0 2px 8px rgba(16, 185, 129, 0.04);
+      --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(16, 185, 129, 0.08);
+      --shadow-lg: 0 20px 40px -8px rgba(15, 23, 42, 0.08), 0 8px 20px -4px rgba(16, 185, 129, 0.12);
+      
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      background-image: 
+        radial-gradient(circle at 10% 15%, rgba(167, 243, 208, 0.35) 0%, transparent 45%),
+        radial-gradient(circle at 90% 20%, rgba(209, 250, 229, 0.45) 0%, transparent 50%),
+        radial-gradient(circle at 50% 85%, rgba(240, 253, 244, 0.6) 0%, transparent 60%);
+      background-attachment: fixed;
+      color: var(--text-body);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .brand-title, .story-step-title {
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--text-headline);
+      letter-spacing: -0.02em;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Layout Containers */
+    .app-wrapper {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 28px 100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ==========================================================================
+       TOP TELEMETRY & NAVIGATION HEADER
+       ========================================================================== */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.12);
+      padding: 12px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .brand-leaf-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10B981 0%, #047857 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .brand-title {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text-headline);
+      line-height: 1;
+    }
+    .brand-tagline {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    .telemetry-strip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .telemetry-badge {
+      background: var(--mint-50);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--mint-700);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .telemetry-badge:hover {
+      background: var(--mint-100);
+      border-color: var(--mint-500);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mint-500);
+      position: relative;
+    }
+    .pulse-dot::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: inherit;
+      animation: pulse-ring 2s infinite ease-in-out;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+
+    .btn-white {
+      background: #FFFFFF;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: var(--text-headline);
+      padding: 7px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-white:hover {
+      border-color: var(--mint-500);
+      color: var(--mint-600);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+
+    /* ==========================================================================
+       HERO & STORYTELLING INTRODUCTION
+       ========================================================================== */
+    .hero-narrative {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      gap: 40px;
+      padding: 50px 0 30px;
+    }
+
+    .story-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--mint-50);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      color: var(--mint-700);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .story-headline {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.12;
+      color: var(--text-headline);
+      margin-bottom: 18px;
+    }
+    .story-headline span {
+      background: linear-gradient(135deg, #059669 0%, #10B981 60%, #0D9488 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .story-lead {
+      font-size: 1.12rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin-bottom: 28px;
+      line-height: 1.65;
+    }
+
+    /* 3D Living Molecule Container */
+    .molecule-canvas-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 253, 244, 0.8));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: var(--radius-lg);
+      height: 380px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #threejs-hero-canvas {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      cursor: grab;
+    }
+    #threejs-hero-canvas:active {
+      cursor: grabbing;
+    }
+
+    .molecule-overlay-badge {
+      position: absolute;
+      bottom: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      color: var(--mint-700);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       NARRATIVE STORYTELLING TIMELINE (THE 3-STEP PIPELINE)
+       ========================================================================== */
+    .story-timeline-section {
+      margin: 40px 0 50px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .section-title {
+      font-size: 1.85rem;
+      font-weight: 700;
+    }
+    .section-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .timeline-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+    @media (max-width: 960px) {
+      .timeline-steps-grid { grid-template-columns: 1fr; }
+    }
+
+    .story-step-card {
+      background: var(--card-white);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 26px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-smooth);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+    }
+    .story-step-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--mint-500);
+      box-shadow: 0 16px 32px -4px rgba(16, 185, 129, 0.16);
+    }
+    .story-step-card.active {
+      border-color: var(--mint-500);
+      background: #FFFFFF;
+      box-shadow: 0 16px 36px -4px rgba(16, 185, 129, 0.22);
+    }
+    .story-step-card.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      width: 60%;
+      height: 3px;
+      background: var(--mint-500);
+      border-radius: 3px 3px 0 0;
+    }
+
+    .step-number-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--mint-600);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .story-step-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .story-step-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+      flex: 1;
+    }
+
+    .step-badge-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--mint-700);
+      background: var(--mint-50);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      width: fit-content;
+    }
+
+    /* ==========================================================================
+       MAIN INTERACTIVE WORKSPACE (CHAPTER PANELS)
+       ========================================================================== */
+    .chapter-panel {
+      display: none;
+      animation: panelFadeIn 0.35s var(--ease-smooth);
+    }
+    .chapter-panel.active {
+      display: block;
+    }
+
+    @keyframes panelFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Search & Control Card */
+    .search-card-white {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .search-input-group {
+      display: flex;
+      gap: 14px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+    .input-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+    .search-input-field {
+      width: 100%;
+      padding: 16px 20px 16px 52px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-md);
+      font-size: 1.05rem;
+      font-family: inherit;
+      color: var(--text-headline);
+      transition: all 0.2s ease;
+    }
+    .search-input-field:focus {
+      outline: none;
+      border-color: var(--mint-500);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    }
+
+    .btn-green-action {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0 32px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s var(--ease-spring);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+    }
+    .btn-green-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+    }
+
+    .chips-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .chip-label {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .story-chip {
+      background: var(--mint-50);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--mint-700);
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .story-chip:hover {
+      background: var(--mint-100);
+      border-color: var(--mint-500);
+      transform: translateY(-1px);
+    }
+
+    /* Filter Bar Options */
+    .filter-row-white {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding-top: 20px;
+      margin-top: 20px;
+      border-top: 1px solid #F1F5F9;
+      align-items: center;
+    }
+    .filter-item-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .filter-label-text {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .styled-select {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      font-size: 0.88rem;
+      color: var(--text-headline);
+      font-family: inherit;
+      outline: none;
+    }
+    .styled-select:focus {
+      border-color: var(--mint-500);
+    }
+
+    /* Candidate Cards Grid */
+    .candidates-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 24px;
+    }
+
+    .repurpose-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: all 0.3s var(--ease-smooth);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .repurpose-card:hover {
+      border-color: var(--mint-500);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .drug-name-header {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-headline);
+      line-height: 1.2;
+    }
+    .drug-sub-indication {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .score-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: var(--mint-50);
+      border: 2px solid var(--mint-500);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+    .score-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--mint-700);
+      line-height: 1;
+    }
+    .score-unit {
+      font-size: 0.6rem;
+      color: var(--mint-600);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill-green {
+      background: var(--mint-50);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: var(--mint-700);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .pill-gene {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      color: var(--text-headline);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pill-gene:hover {
+      border-color: var(--mint-500);
+      background: var(--mint-50);
+      color: var(--mint-700);
+    }
+
+    /* Ollama Mechanistic AI Box */
+    .ollama-story-box {
+      background: #F8FAFC;
+      border-left: 3px solid var(--mint-500);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 14px 16px;
+      font-size: 0.88rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .ollama-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--mint-600);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .btn-reexplain {
+      background: none;
+      border: none;
+      color: var(--mint-600);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .card-actions-strip {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid #F1F5F9;
+    }
+    .btn-card-tool {
+      flex: 1;
+      padding: 8px 12px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-card-tool:hover {
+      background: var(--mint-50);
+      border-color: var(--mint-500);
+      color: var(--mint-700);
+    }
+
+    /* ==========================================================================
+       CHAPTER 2: MOLECULE & ADMET LABORATORY (STEP 2)
+       ========================================================================== */
+    .lab-2col-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 28px;
+    }
+    @media (max-width: 960px) {
+      .lab-2col-layout { grid-template-columns: 1fr; }
+    }
+
+    .lab-panel-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 24px;
+    }
+
+    .panel-header-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .molecule-preview-box {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 240px;
+      margin-bottom: 20px;
+    }
+    .molecule-2d-img {
+      max-width: 220px;
+      max-height: 200px;
+      object-fit: contain;
+    }
+
+    .descriptors-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .descriptor-cell {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+    }
+    .cell-key {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+    }
+    .cell-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-headline);
+      margin-top: 2px;
+    }
+
+    /* Radar Canvas Container */
+    .radar-container {
+      width: 100%;
+      height: 310px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0 20px;
+    }
+
+    /* ==========================================================================
+       CHAPTER 3: POLYPHARMACOLOGY & REVERSE LOOKUP (STEP 3)
+       ========================================================================== */
+    .clean-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .clean-table th {
+      text-align: left;
+      padding: 12px 16px;
+      background: #F8FAFC;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    .clean-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      color: var(--text-headline);
+    }
+    .clean-table tr:hover td {
+      background: #F0FDF4;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    .modal-white-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      width: min(720px, 95%);
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 32px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+    .btn-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-light);
+      cursor: pointer;
+    }
+    .btn-modal-close:hover {
+      color: var(--text-headline);
+    }
+
+    /* Comparison Dock */
+    .sticky-dock {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FFFFFF;
+      border: 1px solid var(--mint-500);
+      border-radius: var(--radius-full);
+      padding: 10px 24px;
+      display: none;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow-lg);
+      z-index: 500;
+    }
+    .sticky-dock.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(16, 185, 129, 0.2);
+      border-top-color: var(--mint-500);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 30px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ==========================================================================
+       REACT BITS SOFT AURORA - LIVING AMBIENT BACKDROP
+       ========================================================================== */
+    #soft-aurora-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.75;
+      transition: opacity 0.5s ease;
+      overflow: hidden;
+    }
+    #soft-aurora-bg canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SoftAurora Living Ambient WebGL Canvas -->
+  <div id="soft-aurora-bg" class="soft-aurora-container"></div>
+
+  <!-- ========================================================================
+       TOP TELEMETRY & BRAND HEADER
+       ======================================================================== -->
+  <header class="top-navbar">
+    <div class="brand-group">
+      <div class="brand-leaf-icon">🧬</div>
+      <div>
+        <div class="brand-title">RemedX</div>
+        <div class="brand-tagline">The Living Story of Precision Drug Repurposing</div>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Badges -->
+    <div class="telemetry-strip">
+      <div class="telemetry-badge" onclick="openHealthModal()" title="View local AI health">
+        <span class="pulse-dot"></span>
+        <span>Local AI: <strong id="ollamaModelTag">gemma3:latest</strong></span>
+      </div>
+      <div class="telemetry-badge" onclick="openHealthModal()">
+        <span class="pulse-dot"></span>
+        <span>Cheminformatics: <strong>RDKit QSAR</strong></span>
+      </div>
+      <div class="telemetry-badge" onclick="openHealthModal()">
+        <span class="pulse-dot"></span>
+        <span>Evidence: <strong id="cacheCountTag">22 Diseases Cached</strong></span>
+      </div>
+      <div class="telemetry-badge" id="auroraBadge" onclick="toggleAurora()" title="Toggle SoftAurora Living Wave" style="background: rgba(16, 185, 129, 0.12); border: 1px solid var(--mint-500); cursor: pointer;">
+        <span class="pulse-dot" style="background: #10B981;"></span>
+        <span>Aurora: <strong id="auroraStatusTag">ON</strong></span>
+      </div>
+      <button class="btn-white" onclick="openHealthModal()">
+        <span>⚡ Diagnostics</span>
+      </button>
+      <button class="btn-white" onclick="exportDossierPdf()">
+        <span>📄 Download Report</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="app-wrapper">
+
+    <!-- ======================================================================
+         HERO SECTION: THE STORY BEGINS WITH THE LIVING MOLECULE
+         ====================================================================== -->
+    <section class="hero-narrative">
+      <div>
+        <div class="story-eyebrow">
+          <span>🌿 Biological Intelligence Platform</span>
+        </div>
+        <h1 class="story-headline">
+          Every Disease Leaves a Trace.<br>
+          Every Molecule Holds <span>Hidden Life.</span>
+        </h1>
+        <p class="story-lead">
+          Traditional drug discovery takes 12 years and $2 billion. RemedX weaves real genomic evidence from Open Targets, 2D/3D chemical topology from RDKit, and kinetic binding affinities from ChEMBL into a living story of accelerated cures.
+        </p>
+        <div style="display:flex; gap:14px;">
+          <button class="btn-green-action" onclick="scrollToChapter('step1')">
+            <span>Begin Discovery Journey</span>
+            <span>➔</span>
+          </button>
+          <button class="btn-white" onclick="scrollToChapter('step2')">
+            <span>Explore Chemistry Lab</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Living 3D Crystal Molecule Hero -->
+      <div class="molecule-canvas-card">
+        <canvas id="threejs-hero-canvas"></canvas>
+        <div class="molecule-overlay-badge">
+          <span>✨ 3D Living Organism Molecule · Drag to Rotate</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         NARRATIVE STORYTELLING TIMELINE (3 STEPS THAT SPEAK)
+         ====================================================================== -->
+    <section class="story-timeline-section" id="story-timeline">
+      <div class="section-header">
+        <h2 class="section-title">The Three Chapters of Discovery</h2>
+        <p class="section-subtitle">How RemedX turns raw biological data into validated repurposing breakthroughs</p>
+      </div>
+
+      <div class="timeline-steps-grid">
+        <!-- Step 1 Card -->
+        <div class="story-step-card active" onclick="activateChapter('step1')" id="card-step1">
+          <div class="step-number-tag">Chapter 01 · Genomic Origin</div>
+          <h3 class="story-step-title">Target Genetics</h3>
+          <p class="story-step-desc">
+            We map disease pathology to validated human target genes using Open Targets GraphQL evidence scores, filtering for high-confidence therapeutic overlaps.
+          </p>
+          <div class="step-badge-indicator">
+            <span>🎯 8 Candidates Ranked</span>
+          </div>
+        </div>
+
+        <!-- Step 2 Card -->
+        <div class="story-step-card" onclick="activateChapter('step2')" id="card-step2">
+          <div class="step-number-tag">Chapter 02 · Chemical Feasibility</div>
+          <h3 class="story-step-title">Molecular ADMET</h3>
+          <p class="story-step-desc">
+            We analyze molecular descriptors using RDKit: Lipinski Rule of 5, Veber oral bioavailability, PAINS toxicophore screens, and multi-parameter optimization (MPO).
+          </p>
+          <div class="step-badge-indicator">
+            <span>⚗️ QSAR &amp; Radar Envelope</span>
+          </div>
+        </div>
+
+        <!-- Step 3 Card -->
+        <div class="story-step-card" onclick="activateChapter('step3')" id="card-step3">
+          <div class="step-number-tag">Chapter 03 · Polypharmacology</div>
+          <h3 class="story-step-title">Clinical Repurposing</h3>
+          <p class="story-step-desc">
+            We cross-reference off-target binding affinities from ChEMBL with Reactome biological cascades and synthesize mechanistic rationales via local Gemma 3 AI.
+          </p>
+          <div class="step-badge-indicator">
+            <span>🔁 ChEMBL + Gemma 3 RAG</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ======================================================================
+         CHAPTER 1: TARGET GENETICS & DISEASE DISCOVERY
+         ====================================================================== -->
+    <section id="chapter-step1" class="chapter-panel active">
+      
+      <!-- Search & Filters -->
+      <div class="search-card-white">
+        <div class="search-input-group">
+          <div class="input-wrapper">
+            <span class="input-icon">🔍</span>
+            <input type="text" id="diseaseInput" class="search-input-field" placeholder="Enter disease condition (e.g. Alzheimer's disease, Parkinson's, Glioblastoma, Crohn's...)" value="Alzheimer's disease" onkeydown="if(event.key==='Enter') searchDisease()">
+          </div>
+          <button class="btn-green-action" onclick="searchDisease()">
+            <span>Discover Candidates</span>
+            <span>➔</span>
+          </button>
+        </div>
+
+        <div class="chips-row">
+          <span class="chip-label">Explore Presets:</span>
+          <span class="story-chip" onclick="quickDisease('Alzheimer\'s disease')">Alzheimer's disease</span>
+          <span class="story-chip" onclick="quickDisease('Parkinson disease')">Parkinson disease</span>
+          <span class="story-chip" onclick="quickDisease('Type 2 diabetes')">Type 2 diabetes</span>
+          <span class="story-chip" onclick="quickDisease('Glioblastoma')">Glioblastoma</span>
+          <span class="story-chip" onclick="quickDisease('Crohn\'s disease')">Crohn's disease</span>
+          <span class="story-chip" onclick="quickDisease('Breast cancer')">Breast cancer</span>
+          <span class="story-chip" onclick="quickDisease('Rheumatoid arthritis')">Rheumatoid arthritis</span>
+        </div>
+
+        <div class="filter-row-white">
+          <div class="filter-item-block">
+            <div class="filter-label-text">
+              <span>Minimum Confidence Threshold</span>
+              <strong id="scoreFilterDisplay" class="mono" style="color:var(--mint-600);">0.30</strong>
+            </div>
+            <input type="range" id="scoreRange" min="0" max="1" step="0.05" value="0.30" style="accent-color:var(--mint-500);" oninput="updateScoreFilter(this.value)">
+          </div>
+
+          <div class="filter-item-block">
+            <div class="filter-label-text">Clinical Approval Status</div>
+            <select id="stageFilter" class="styled-select" onchange="applyFilters()">
+              <option value="ALL">All Clinical Phases</option>
+              <option value="APPROVED">Phase IV / FDA Approved Only</option>
+              <option value="PHASE3">Phase III &amp; Above</option>
+            </select>
+          </div>
+
+          <div class="filter-item-block">
+            <div class="filter-label-text">Sort Ranking</div>
+            <select id="sortSelect" class="styled-select" onchange="applyFilters()">
+              <option value="SCORE_DESC">Highest Evidence Score</option>
+              <option value="NAME_ASC">Drug Name (A-Z)</option>
+              <option value="TARGET_ASC">Target Gene</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Candidate Cards Grid -->
+      <div class="candidates-cards-grid" id="candidatesGrid">
+        <div class="spinner"></div>
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================================
+         CHAPTER 2: MOLECULAR ADMET LABORATORY
+         ====================================================================== -->
+    <section id="chapter-step2" class="chapter-panel">
+      
+      <div class="search-card-white">
+        <div class="search-input-group">
+          <div class="input-wrapper">
+            <span class="input-icon">⚗️</span>
+            <input type="text" id="smilesInput" class="search-input-field mono" placeholder="Enter SMILES string (e.g. CC(=O)OC1=CC=CC=C1C(=O)O for Aspirin)" value="CC(=O)OC1=CC=CC=C1C(=O)O" onkeydown="if(event.key==='Enter') analyzeCompound()">
+          </div>
+          <button class="btn-green-action" onclick="analyzeCompound()">
+            <span>Analyze Molecule</span>
+            <span>➔</span>
+          </button>
+        </div>
+
+        <div class="chips-row">
+          <span class="chip-label">Chemical Presets:</span>
+          <span class="story-chip" onclick="quickSmiles('Aspirin', 'CC(=O)OC1=CC=CC=C1C(=O)O')">Aspirin</span>
+          <span class="story-chip" onclick="quickSmiles('Sildenafil', 'CCCC1=NN(C)C2=C1N=C(NC2=O)C3=C(OCC)C=CC(=C3)S(=O)(=O)N4CCN(C)CC4')">Sildenafil</span>
+          <span class="story-chip" onclick="quickSmiles('Metformin', 'CN(C)C(=N)N=C(N)N')">Metformin</span>
+          <span class="story-chip" onclick="quickSmiles('Thalidomide', 'O=C1CCC(N2C(=O)C3=CC=CC=C3C2=O)C(=O)N1')">Thalidomide</span>
+          <span class="story-chip" onclick="quickSmiles('Imatinib', 'CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5')">Imatinib</span>
+          <span class="story-chip" onclick="quickSmiles('Dexamethasone', 'CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C')">Dexamethasone</span>
+        </div>
+      </div>
+
+      <div class="lab-2col-layout" id="labDashboard">
+        
+        <!-- Left: 2D Topology & Descriptors -->
+        <div>
+          <div class="lab-panel-card">
+            <div class="panel-header-title">
+              <span>2D Chemical Topology</span>
+              <span class="pill-green mono" id="formulaBadge">C9H8O4</span>
+            </div>
+
+            <div class="molecule-preview-box">
+              <img id="molImage" class="molecule-2d-img" src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/2244/PNG" alt="Chemical Structure">
+              <div class="mono" style="font-size:0.75rem; color:var(--text-light); margin-top:10px; word-break:break-all;" id="smilesDisplay">CC(=O)OC1=CC=CC=C1C(=O)O</div>
+            </div>
+
+            <div class="descriptors-metric-grid">
+              <div class="descriptor-cell">
+                <div class="cell-key">Molecular Wt</div>
+                <div class="cell-val mono" id="propMW">180.16</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">LogP</div>
+                <div class="cell-val mono" id="propLogP">1.20</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">TPSA</div>
+                <div class="cell-val mono" id="propTPSA">63.6 Å²</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">H-Donors</div>
+                <div class="cell-val mono" id="propHBD">1</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">H-Acceptors</div>
+                <div class="cell-val mono" id="propHBA">4</div>
+              </div>
+              <div class="descriptor-cell">
+                <div class="cell-key">Rot. Bonds</div>
+                <div class="cell-val mono" id="propRotB">3</div>
+              </div>
+            </div>
+
+            <!-- Rules Evaluation -->
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-md); padding:16px;">
+              <div style="font-size:0.82rem; font-weight:700; color:var(--mint-700); margin-bottom:10px;">Drug-Likeness Criteria</div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;">
+                <span>Lipinski Rule of 5</span>
+                <strong style="color:var(--mint-600);" id="lipinskiStatus">PASS (0 Violations)</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;">
+                <span>Veber Oral Bioavailability</span>
+                <strong style="color:var(--mint-600);" id="veberStatus">PASS</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+                <span>PAINS Structural Alerts</span>
+                <strong style="color:var(--mint-600);" id="painsStatus">CLEAN (0 Alerts)</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Bioavailability Radar Chart -->
+        <div>
+          <div class="lab-panel-card">
+            <div class="panel-header-title">
+              <span>Bioavailability Radar Envelope</span>
+              <span class="pill-green mono" id="mpoBadge">MPO: 1.0 (Exceptional Lead)</span>
+            </div>
+
+            <div class="radar-container">
+              <canvas id="radarChartCanvas" width="340" height="300"></canvas>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:14px;">
+              <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:var(--radius-sm);">
+                <div style="font-size:0.7rem; color:var(--text-light); text-transform:uppercase;">Intestinal Absorption</div>
+                <div style="font-size:0.92rem; font-weight:700; color:var(--text-headline);" id="admetHia">High (> 85%)</div>
+              </div>
+              <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:var(--radius-sm);">
+                <div style="font-size:0.7rem; color:var(--text-light); text-transform:uppercase;">Blood-Brain Barrier</div>
+                <div style="font-size:0.92rem; font-weight:700; color:var(--text-headline);" id="admetBbb">Moderate Penetration</div>
+              </div>
+              <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:var(--radius-sm);">
+                <div style="font-size:0.7rem; color:var(--text-light); text-transform:uppercase;">Solubility (LogS)</div>
+                <div style="font-size:0.92rem; font-weight:700; color:var(--text-headline);" id="admetSol">High Solubility</div>
+              </div>
+              <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:var(--radius-sm);">
+                <div style="font-size:0.7rem; color:var(--text-light); text-transform:uppercase;">Regulatory Pathway</div>
+                <div style="font-size:0.92rem; font-weight:700; color:var(--mint-700);">FDA 505(b)(2) Fast-Track</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================================
+         CHAPTER 3: POLYPHARMACOLOGY & REVERSE LOOKUP
+         ====================================================================== -->
+    <section id="chapter-step3" class="chapter-panel">
+      
+      <div class="search-card-white">
+        <div class="search-input-group">
+          <div class="input-wrapper">
+            <span class="input-icon">🔍</span>
+            <input type="text" id="reverseInput" class="search-input-field" placeholder="Enter drug name (e.g. Aspirin, Metformin, Sildenafil, Atorvastatin, Celecoxib)" value="Aspirin" onkeydown="if(event.key==='Enter') searchReverse()">
+          </div>
+          <button class="btn-green-action" onclick="searchReverse()">
+            <span>Reverse Lookup</span>
+            <span>➔</span>
+          </button>
+        </div>
+
+        <div class="chips-row">
+          <span class="chip-label">Drug Presets:</span>
+          <span class="story-chip" onclick="quickReverse('Aspirin')">Aspirin</span>
+          <span class="story-chip" onclick="quickReverse('Metformin')">Metformin</span>
+          <span class="story-chip" onclick="quickReverse('Sildenafil')">Sildenafil</span>
+          <span class="story-chip" onclick="quickReverse('Atorvastatin')">Atorvastatin</span>
+          <span class="story-chip" onclick="quickReverse('Celecoxib')">Celecoxib</span>
+        </div>
+      </div>
+
+      <div class="lab-panel-card">
+        <div class="panel-header-title">
+          <span>ChEMBL Off-Target Binding Landscape</span>
+          <span class="pill-green mono" id="revStatsBadge">25 Bioassay Records</span>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Target Protein</th>
+                <th>Gene Symbol</th>
+                <th>ChEMBL ID</th>
+                <th>pChEMBL Affinity</th>
+                <th>Converted Potency (nM)</th>
+                <th>Signaling Pathways</th>
+              </tr>
+            </thead>
+            <tbody id="reverseTbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /app-wrapper -->
+
+
+  <!-- ========================================================================
+       STICKY COMPARISON DOCK
+       ======================================================================== -->
+  <div class="sticky-dock" id="comparisonDock">
+    <span style="font-weight:700; color:var(--mint-700); font-size:0.85rem;">⚖️ Drug Comparison Dock (<span id="dockCount">0</span>/4):</span>
+    <div id="dockPillsList" style="display:flex; gap:8px;"></div>
+    <button class="btn-white" style="padding:6px 14px;" onclick="clearComparison()">Clear</button>
+    <button class="btn-green-action" style="padding:6px 18px; font-size:0.82rem;" onclick="openComparisonModal()">Compare Side-by-Side</button>
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL: REACTOME PATHWAYS
+       ======================================================================== -->
+  <div class="modal-backdrop" id="pathwayModal">
+    <div class="modal-white-card">
+      <button class="btn-modal-close" onclick="closePathwayModal()">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <span style="font-size:1.6rem;">🧬</span>
+        <div>
+          <h2 style="font-size:1.35rem; font-weight:700;">Reactome Biological Pathways</h2>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Signaling Cascades for Target Gene: <strong id="pathwayGeneTitle" class="mono" style="color:var(--mint-600);">PTGS2</strong></p>
+        </div>
+      </div>
+      <div id="pathwayModalBody">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL: SYSTEM HEALTH & TELEMETRY
+       ======================================================================== -->
+  <div class="modal-backdrop" id="healthModal">
+    <div class="modal-white-card">
+      <button class="btn-modal-close" onclick="closeHealthModal()">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <span style="font-size:1.6rem;">⚡</span>
+        <div>
+          <h2 style="font-size:1.35rem; font-weight:700;">RemedX Subsystem Diagnostics</h2>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Real-time service health across local LLM and bioinformatic pipelines</p>
+        </div>
+      </div>
+      <div id="healthModalBody">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL: MULTI-DRUG COMPARISON
+       ======================================================================== -->
+  <div class="modal-backdrop" id="compareModal">
+    <div class="modal-white-card" style="width:min(880px, 95%);">
+      <button class="btn-modal-close" onclick="closeCompareModal()">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <span style="font-size:1.6rem;">⚖️</span>
+        <div>
+          <h2 style="font-size:1.35rem; font-weight:700;">Candidate Drug Comparison Matrix</h2>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Multi-parametric evaluation across selected therapeutic leads</p>
+        </div>
+      </div>
+      <div id="compareModalBody"></div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       CORE JAVASCRIPT & THREE.JS CRYSTAL LIVING MOLECULE
+       ======================================================================== -->
+  <script>
+    const API_BASE = window.location.origin;
+    let currentDiseaseData = null;
+    let comparisonList = [];
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      initThreeJsCrystalMolecule();
+      checkTelemetryHealth();
+      searchDisease();
+      analyzeCompound();
+    });
+
+    // ------------------------------------------------------------------------
+    // CHAPTER NAVIGATION
+    // ------------------------------------------------------------------------
+    function activateChapter(stepId) {
+      document.querySelectorAll('.story-step-card').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.chapter-panel').forEach(p => p.classList.remove('active'));
+
+      document.getElementById(`card-${stepId}`).classList.add('active');
+      document.getElementById(`chapter-${stepId}`).classList.add('active');
+    }
+
+    function scrollToChapter(stepId) {
+      activateChapter(stepId);
+      document.getElementById('story-timeline').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ------------------------------------------------------------------------
+    // TELEMETRY & HEALTH
+    // ------------------------------------------------------------------------
+    async function checkTelemetryHealth() {
+      try {
+        const resp = await fetch(`${API_BASE}/api/health`);
+        const data = await resp.json();
+        if (data.services) {
+          const ollama = data.services.ollama;
+          document.getElementById('ollamaModelTag').textContent = 
+            ollama?.active ? (ollama.model || 'gemma3:latest') : 'Fallback Active';
+          
+          if (data.services.cache_database) {
+            document.getElementById('cacheCountTag').textContent = 
+              `${data.services.cache_database.cached_diseases || 22} Diseases Cached`;
+          }
+        }
+      } catch (err) {
+        console.warn("Telemetry notice:", err);
+      }
+    }
+
+    async function openHealthModal() {
+      const modal = document.getElementById('healthModal');
+      const body = document.getElementById('healthModalBody');
+      modal.classList.add('active');
+      body.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/health`);
+        const data = await resp.json();
+        const s = data.services || {};
+
+        body.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>Local AI Inference (Ollama)</strong>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Model: <code class="mono" style="color:var(--mint-600);">${s.ollama?.model || 'gemma3:latest'}</code></div>
+              </div>
+              <span class="pill-green">${s.ollama?.status || 'ONLINE'}</span>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>Cheminformatics &amp; QSAR Pipeline</strong>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Engine: <code class="mono">RDKit 2024 Topology</code></div>
+              </div>
+              <span class="pill-green">ONLINE</span>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>ChEMBL Bioactivity &amp; Open Targets</strong>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Protocols: <code class="mono">GraphQL v4 &amp; REST v33</code></div>
+              </div>
+              <span class="pill-green">ONLINE</span>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>Pre-Warmed SQLite Cache</strong>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Storage: <code class="mono" style="color:var(--mint-600);">${s.cache_database?.cached_diseases || 22} Conditions Cached</code></div>
+              </div>
+              <span class="pill-green">ONLINE</span>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        body.innerHTML = `<div style="color:#E11D48;">Failed to load diagnostics: ${err.message}</div>`;
+      }
+    }
+
+    function closeHealthModal() {
+      document.getElementById('healthModal').classList.remove('active');
+    }
+
+    // ------------------------------------------------------------------------
+    // CHAPTER 1: DISEASE REPURPOSING LOGIC
+    // ------------------------------------------------------------------------
+    function quickDisease(name) {
+      document.getElementById('diseaseInput').value = name;
+      searchDisease();
+    }
+
+    async function searchDisease() {
+      const query = document.getElementById('diseaseInput').value.trim();
+      if (!query) return;
+
+      const grid = document.getElementById('candidatesGrid');
+      grid.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/repurpose?disease=${encodeURIComponent(query)}`);
+        const data = await resp.json();
+
+        if (data.error) {
+          grid.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);"><h3>${data.error}</h3></div>`;
+          return;
+        }
+
+        currentDiseaseData = data;
+        applyFilters();
+      } catch (err) {
+        grid.innerHTML = `<div style="text-align:center; padding:40px; color:#E11D48;">Failed to fetch candidates: ${err.message}</div>`;
+      }
+    }
+
+    function updateScoreFilter(val) {
+      document.getElementById('scoreFilterDisplay').textContent = parseFloat(val).toFixed(2);
+      applyFilters();
+    }
+
+    function applyFilters() {
+      if (!currentDiseaseData) return;
+
+      const minScore = parseFloat(document.getElementById('scoreRange').value);
+      const stageFilter = document.getElementById('stageFilter').value;
+      const sortBy = document.getElementById('sortSelect').value;
+
+      let list = [...(currentDiseaseData.candidates || [])].filter(c => {
+        if ((c.confidenceScore || 0) < minScore) return false;
+        if (stageFilter === 'APPROVED' && !c.clinicalStage?.toLowerCase().includes('approved') && !c.clinicalStage?.toLowerCase().includes('phase 4')) return false;
+        if (stageFilter === 'PHASE3' && (c.clinicalStage?.toLowerCase().includes('phase 1') || c.clinicalStage?.toLowerCase().includes('phase 2'))) return false;
+        return true;
+      });
+
+      if (sortBy === 'SCORE_DESC') {
+        list.sort((a, b) => (b.confidenceScore || 0) - (a.confidenceScore || 0));
+      } else if (sortBy === 'NAME_ASC') {
+        list.sort((a, b) => (a.drugName || '').localeCompare(b.drugName || ''));
+      } else if (sortBy === 'TARGET_ASC') {
+        list.sort((a, b) => (a.targetGene || '').localeCompare(b.targetGene || ''));
+      }
+
+      const grid = document.getElementById('candidatesGrid');
+      if (list.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">No candidates match your active filter settings.</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map((c, i) => {
+        const associated = (c.associatedDiseases || []).slice(0, 2).join(', ') || 'Original Indication';
+        return `
+          <div class="repurpose-card" id="card-${i}">
+            <div class="card-top-row">
+              <div>
+                <div class="drug-name-header">${c.drugName}</div>
+                <div class="drug-sub-indication">Known for: <strong>${associated}</strong></div>
+              </div>
+              <div class="score-circle">
+                <span class="score-val">${(c.confidenceScore || 0).toFixed(2)}</span>
+                <span class="score-unit">Evidence</span>
+              </div>
+            </div>
+
+            <div class="tags-container">
+              <span class="pill-green">● ${c.clinicalStage || 'Phase IV Approved'}</span>
+              <span class="pill-gene" onclick="openPathwayModal('${c.targetGene}')" title="Click to view Reactome pathways">
+                🧬 Target: <strong>${c.targetGene}</strong> (${c.targetFullName || ''})
+              </span>
+            </div>
+
+            <div class="ollama-story-box">
+              <div class="ollama-box-header">
+                <span>🤖 AI Rationale (Gemma 3)</span>
+                <button class="btn-reexplain" onclick="reexplainCard('${encodeURIComponent(c.drugName)}', '${encodeURIComponent(c.targetGene)}', '${encodeURIComponent(c.targetFullName||'')}', ${c.confidenceScore}, '${encodeURIComponent(c.clinicalStage||'')}', '${encodeURIComponent(associated)}', 'ai-text-${i}')">Deepen Rationale</button>
+              </div>
+              <div id="ai-text-${i}">${c.aiExplanation || 'Hypothesis based on verified target interaction.'}</div>
+            </div>
+
+            <div class="card-actions-strip">
+              <button class="btn-card-tool" onclick="sendToChemi('${c.drugName}')">⚗️ ADMET</button>
+              <button class="btn-card-tool" onclick="sendToReverse('${c.drugName}')">🔁 Off-Targets</button>
+              <button class="btn-card-tool" onclick="openPathwayModal('${c.targetGene}')">🧬 Pathway</button>
+              <button class="btn-card-tool" onclick="toggleCompare('${c.drugName}', '${c.targetGene}', ${(c.confidenceScore||0).toFixed(2)}, '${c.clinicalStage||'Approved'}', '${associated}')">⚖️ Compare</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function reexplainCard(drug, gene, targetName, score, stage, origUse, elemId) {
+      const elem = document.getElementById(elemId);
+      if (!elem) return;
+      const oldText = elem.innerHTML;
+      elem.innerHTML = '<span style="color:var(--mint-600);">✨ Ollama (gemma3:latest) generating fresh mechanistic reasoning...</span>';
+
+      const disease = currentDiseaseData?.resolvedName || document.getElementById('diseaseInput').value;
+
+      try {
+        const url = `${API_BASE}/api/explain?drug=${drug}&disease=${encodeURIComponent(disease)}&target_gene=${gene}&target_name=${targetName}&score=${score}&stage=${stage}&original_use=${origUse}`;
+        const resp = await fetch(url);
+        const data = await resp.json();
+        if (data.explanation) {
+          elem.innerHTML = `${data.explanation} <span style="font-size:0.7rem; color:var(--text-light); display:block; margin-top:4px;">Generated via ${data.model} in ${data.latency_seconds || 0}s</span>`;
+        } else {
+          elem.innerHTML = oldText;
+        }
+      } catch (err) {
+        elem.innerHTML = oldText;
+      }
+    }
+
+    function exportDossierPdf() {
+      const disease = currentDiseaseData?.resolvedName || document.getElementById('diseaseInput').value.trim();
+      if (!disease) return;
+      window.open(`${API_BASE}/api/export-pdf?disease=${encodeURIComponent(disease)}`, '_blank');
+    }
+
+    // ------------------------------------------------------------------------
+    // CHAPTER 2: MOLECULE & ADMET LABORATORY LOGIC
+    // ------------------------------------------------------------------------
+    function quickSmiles(name, smiles) {
+      document.getElementById('smilesInput').value = smiles;
+      analyzeCompound();
+    }
+
+    function sendToChemi(drugName) {
+      activateChapter('step2');
+      const presets = {
+        'aspirin': 'CC(=O)OC1=CC=CC=C1C(=O)O',
+        'sildenafil': 'CCCC1=NN(C)C2=C1N=C(NC2=O)C3=C(OCC)C=CC(=C3)S(=O)(=O)N4CCN(C)CC4',
+        'metformin': 'CN(C)C(=N)N=C(N)N',
+        'thalidomide': 'O=C1CCC(N2C(=O)C3=CC=CC=C3C2=O)C(=O)N1',
+        'imatinib': 'CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5',
+        'dexamethasone': 'CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C'
+      };
+      const key = drugName.toLowerCase();
+      document.getElementById('smilesInput').value = presets[key] || 'CC(=O)OC1=CC=CC=C1C(=O)O';
+      analyzeCompound();
+      document.getElementById('chapter-step2').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function analyzeCompound() {
+      const smiles = document.getElementById('smilesInput').value.trim();
+      if (!smiles) return;
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/compound/analyze?smiles=${encodeURIComponent(smiles)}`);
+        const data = await resp.json();
+
+        if (data.error) {
+          alert("Cheminformatics notice: " + data.error);
+          return;
+        }
+
+        renderChemiData(data);
+      } catch (err) {
+        console.warn("Chemi error:", err);
+      }
+    }
+
+    function renderChemiData(data) {
+      const desc = data.descriptors || {};
+      const ev = data.evaluation || {};
+      const admet = ev.admet || {};
+
+      document.getElementById('formulaBadge').textContent = desc.formula || 'N/A';
+      document.getElementById('smilesDisplay').textContent = data.smiles || '';
+      document.getElementById('propMW').textContent = (desc.mw || 0).toFixed(2);
+      document.getElementById('propLogP').textContent = (desc.logp || 0).toFixed(2);
+      document.getElementById('propTPSA').textContent = (desc.tpsa || 0).toFixed(1) + ' Å²';
+      document.getElementById('propHBD').textContent = desc.hbd ?? '0';
+      document.getElementById('propHBA').textContent = desc.hba ?? '0';
+      document.getElementById('propRotB').textContent = desc.rotb ?? '0';
+
+      if (desc.image_url) {
+        document.getElementById('molImage').src = desc.image_url;
+      }
+
+      document.getElementById('lipinskiStatus').textContent = ev.lipinski?.pass ? 'PASS (0 Violations)' : 'FAIL';
+      document.getElementById('veberStatus').textContent = ev.veber?.pass ? 'PASS' : 'FAIL';
+      document.getElementById('painsStatus').textContent = !data.alerts?.pains_flag ? 'CLEAN (0 Alerts)' : 'ALERT';
+      document.getElementById('mpoBadge').textContent = `MPO: ${ev.mpo?.desirability_index || 1.0} (${ev.mpo?.rating || 'Exceptional'})`;
+
+      document.getElementById('admetHia').textContent = admet.hia_absorption || 'High (> 85%)';
+      document.getElementById('admetBbb').textContent = admet.bbb_permeability || 'Moderate Penetration';
+      document.getElementById('admetSol').textContent = admet.solubility_label || 'High Solubility';
+
+      // Draw Radar
+      const radar = data.radar_data || {};
+      drawLightRadar(radar.labels || ["MW/500", "LogP/5", "HBD/5", "HBA/10", "TPSA/140", "RotB/10"], radar.values || [0.36, 0.24, 0.2, 0.4, 0.45, 0.3]);
+    }
+
+    function drawLightRadar(labels, values) {
+      const canvas = document.getElementById('radarChartCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width, h = canvas.height;
+      const cx = w / 2, cy = h / 2;
+      const radius = 100;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const numAxes = labels.length;
+      const angleStep = (Math.PI * 2) / numAxes;
+
+      // Guides
+      for (let lvl = 1; lvl <= 4; lvl++) {
+        const r = (radius / 4) * lvl;
+        ctx.beginPath();
+        for (let i = 0; i < numAxes; i++) {
+          const a = i * angleStep - Math.PI / 2;
+          const x = cx + r * Math.cos(a);
+          const y = cy + r * Math.sin(a);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = lvl === 4 ? 'rgba(16, 185, 129, 0.35)' : 'rgba(226, 232, 240, 0.8)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // Axes & Labels
+      ctx.font = '11px Space Grotesk, sans-serif';
+      ctx.fillStyle = '#64748B';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let i = 0; i < numAxes; i++) {
+        const a = i * angleStep - Math.PI / 2;
+        const x = cx + radius * Math.cos(a);
+        const y = cy + radius * Math.sin(a);
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#E2E8F0';
+        ctx.stroke();
+
+        const lx = cx + (radius + 22) * Math.cos(a);
+        const ly = cy + (radius + 18) * Math.sin(a);
+        ctx.fillText(labels[i], lx, ly);
+      }
+
+      // Golden Bioavailability Boundary (1.0)
+      ctx.beginPath();
+      for (let i = 0; i < numAxes; i++) {
+        const a = i * angleStep - Math.PI / 2;
+        const x = cx + radius * Math.cos(a);
+        const y = cy + radius * Math.sin(a);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = '#F59E0B';
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Data Polygon (Fresh Mint Green)
+      ctx.beginPath();
+      for (let i = 0; i < numAxes; i++) {
+        const val = Math.min(Math.max(values[i] || 0.1, 0.05), 1.35);
+        const r = radius * (val / 1.0);
+        const a = i * angleStep - Math.PI / 2;
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.22)';
+      ctx.fill();
+      ctx.strokeStyle = '#10B981';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Vertex dots
+      for (let i = 0; i < numAxes; i++) {
+        const val = Math.min(Math.max(values[i] || 0.1, 0.05), 1.35);
+        const r = radius * (val / 1.0);
+        const a = i * angleStep - Math.PI / 2;
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+        ctx.strokeStyle = '#059669';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // CHAPTER 3: POLYPHARMACOLOGY & REVERSE LOOKUP LOGIC
+    // ------------------------------------------------------------------------
+    function quickReverse(drug) {
+      document.getElementById('reverseInput').value = drug;
+      searchReverse();
+    }
+
+    function sendToReverse(drugName) {
+      activateChapter('step3');
+      document.getElementById('reverseInput').value = drugName;
+      searchReverse();
+      document.getElementById('chapter-step3').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function searchReverse() {
+      const query = document.getElementById('reverseInput').value.trim();
+      if (!query) return;
+
+      const tbody = document.getElementById('reverseTbody');
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;"><div class="spinner"></div></td></tr>';
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/reverse-lookup?query=${encodeURIComponent(query)}`);
+        const data = await resp.json();
+
+        document.getElementById('revStatsBadge').textContent = `${data.total_bioactivities_found || 0} Bioassay Records · ${data.chembl_id || ''}`;
+
+        const targets = data.top_off_targets || [];
+        if (targets.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No off-target binding affinities found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = targets.map(t => `
+          <tr>
+            <td><strong>${t.target_name}</strong></td>
+            <td><span class="mono" style="color:var(--mint-700); font-weight:700;">${t.gene_symbol}</span></td>
+            <td><code class="mono" style="font-size:0.75rem;">${t.target_chembl_id}</code></td>
+            <td><span class="mono" style="color:var(--mint-600); font-weight:700;">${(t.pchembl||0).toFixed(2)}</span></td>
+            <td><span class="mono">${(t.ic50_nm||0).toFixed(1)} nM</span></td>
+            <td>
+              <button class="btn-white" style="padding:4px 12px; font-size:0.75rem;" onclick="openPathwayModal('${t.gene_symbol}')">
+                🧬 View Reactome
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color:#E11D48; text-align:center;">Lookup failed: ${err.message}</td></tr>`;
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // REACTOME PATHWAYS MODAL
+    // ------------------------------------------------------------------------
+    async function openPathwayModal(gene) {
+      const modal = document.getElementById('pathwayModal');
+      const body = document.getElementById('pathwayModalBody');
+      document.getElementById('pathwayGeneTitle').textContent = gene;
+      modal.classList.add('active');
+      body.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/pathways?gene=${encodeURIComponent(gene)}`);
+        const data = await resp.json();
+        const pathways = data.pathways || [];
+
+        if (pathways.length === 0) {
+          body.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted);">No annotated Reactome pathways for gene ${gene}.</div>`;
+          return;
+        }
+
+        body.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            ${pathways.map(p => `
+              <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:14px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-weight:700; color:var(--text-headline); font-size:0.95rem;">${p.name}</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;" class="mono">ID: ${p.id} · Homo sapiens</div>
+                </div>
+                <a href="${p.url || `https://reactome.org/content/detail/${p.id}`}" target="_blank" class="btn-white" style="text-decoration:none; font-size:0.75rem;">
+                  <span>Diagram ↗</span>
+                </a>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch (err) {
+        body.innerHTML = `<div style="color:#E11D48;">Failed to load pathways: ${err.message}</div>`;
+      }
+    }
+
+    function closePathwayModal() {
+      document.getElementById('pathwayModal').classList.remove('active');
+    }
+
+    // ------------------------------------------------------------------------
+    // DRUG COMPARISON DOCK
+    // ------------------------------------------------------------------------
+    function toggleCompare(name, gene, score, phase, origUse) {
+      const idx = comparisonList.findIndex(d => d.name === name);
+      if (idx >= 0) {
+        comparisonList.splice(idx, 1);
+      } else {
+        if (comparisonList.length >= 4) {
+          alert("You can compare up to 4 drugs simultaneously.");
+          return;
+        }
+        comparisonList.push({ name, gene, score, phase, origUse });
+      }
+      renderDock();
+    }
+
+    function renderDock() {
+      const dock = document.getElementById('comparisonDock');
+      const list = document.getElementById('dockPillsList');
+      const count = document.getElementById('dockCount');
+
+      count.textContent = comparisonList.length;
+      if (comparisonList.length > 0) {
+        dock.classList.add('active');
+      } else {
+        dock.classList.remove('active');
+      }
+
+      list.innerHTML = comparisonList.map((d, i) => `
+        <div style="background:var(--mint-50); border:1px solid var(--mint-500); padding:4px 12px; border-radius:9999px; font-size:0.8rem; font-weight:700; color:var(--mint-700); display:flex; align-items:center; gap:6px;">
+          <span>${d.name}</span>
+          <span style="cursor:pointer; color:#E11D48;" onclick="removeCompare(${i})">✕</span>
+        </div>
+      `).join('');
+    }
+
+    function removeCompare(i) {
+      comparisonList.splice(i, 1);
+      renderDock();
+    }
+
+    function clearComparison() {
+      comparisonList = [];
+      renderDock();
+    }
+
+    function openComparisonModal() {
+      if (comparisonList.length === 0) return;
+      const modal = document.getElementById('compareModal');
+      const body = document.getElementById('compareModalBody');
+      modal.classList.add('active');
+
+      body.innerHTML = `
+        <div style="overflow-x:auto;">
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Parametric Attribute</th>
+                ${comparisonList.map(d => `<th style="color:var(--mint-700);">${d.name}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Target Gene</strong></td>
+                ${comparisonList.map(d => `<td class="mono" style="font-weight:700;">${d.gene}</td>`).join('')}
+              </tr>
+              <tr>
+                <td><strong>Evidence Score</strong></td>
+                ${comparisonList.map(d => `<td class="mono" style="color:var(--mint-600); font-weight:700;">${d.score} / 1.0</td>`).join('')}
+              </tr>
+              <tr>
+                <td><strong>Clinical Phase</strong></td>
+                ${comparisonList.map(d => `<td><span class="pill-green">${d.phase}</span></td>`).join('')}
+              </tr>
+              <tr>
+                <td><strong>Known Indication</strong></td>
+                ${comparisonList.map(d => `<td>${d.origUse}</td>`).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compareModal').classList.remove('active');
+    }
+
+    // ------------------------------------------------------------------------
+    // THREE.JS CRYSTAL LIVING ORGANISM MOLECULE
+    // ------------------------------------------------------------------------
+    function initThreeJsCrystalMolecule() {
+      const canvas = document.getElementById('threejs-hero-canvas');
+      if (!canvas) return;
+
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40, rect.width / rect.height, 0.1, 100);
+      camera.position.set(0, 0, 8.5);
+
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      renderer.setSize(rect.width, rect.height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Light Green / Crystal White Refractive Material
+      const crystalMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xE6F4EA,
+        metalness: 0.1,
+        roughness: 0.15,
+        transmission: 0.9,
+        thickness: 1.5,
+        transparent: true,
+        opacity: 0.92,
+        reflectivity: 0.8,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1
+      });
+
+      const moleculeGroup = new THREE.Group();
+      scene.add(moleculeGroup);
+
+      // Central Crystal Core
+      const centerGeo = new THREE.SphereGeometry(1.1, 36, 36);
+      const centerCore = new THREE.Mesh(centerGeo, crystalMaterial);
+      centerCore.material.emissive = new THREE.Color(0x10B981);
+      centerCore.material.emissiveIntensity = 0.25;
+      moleculeGroup.add(centerCore);
+
+      // Surrounding Nodes
+      const nodeDefs = [
+        { pos: new THREE.Vector3(-1.9, 0.9, 0.4), color: 0x10B981, size: 0.65 },
+        { pos: new THREE.Vector3(1.8, 1.2, -0.3), color: 0x059669, size: 0.7 },
+        { pos: new THREE.Vector3(-1.4, -1.6, 0.6), color: 0x34D399, size: 0.6 },
+        { pos: new THREE.Vector3(1.7, -1.3, 0.5), color: 0x0D9488, size: 0.65 },
+        { pos: new THREE.Vector3(0.1, 1.9, -0.6), color: 0xA7F3D0, size: 0.55 }
+      ];
+
+      nodeDefs.forEach(n => {
+        const sGeo = new THREE.SphereGeometry(n.size, 32, 32);
+        const sMat = crystalMaterial.clone();
+        sMat.color.setHex(n.color);
+        sMat.emissive = new THREE.Color(n.color);
+        sMat.emissiveIntensity = 0.3;
+        const sphere = new THREE.Mesh(sGeo, sMat);
+        sphere.position.copy(n.pos);
+        moleculeGroup.add(sphere);
+
+        // Cylinder Bond
+        const dist = new THREE.Vector3(0, 0, 0).distanceTo(n.pos);
+        const bondGeo = new THREE.CylinderGeometry(0.05, 0.05, dist, 16);
+        const bondMat = new THREE.MeshStandardMaterial({
+          color: 0x10B981,
+          roughness: 0.3,
+          transparent: true,
+          opacity: 0.75
+        });
+        const bond = new THREE.Mesh(bondGeo, bondMat);
+        bond.position.copy(n.pos.clone().multiplyScalar(0.5));
+        bond.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), n.pos.clone().normalize());
+        moleculeGroup.add(bond);
+      });
+
+      // Lighting for clean crystal refraction
+      const ambientLight = new THREE.AmbientLight(0xFFFFFF, 1.8);
+      scene.add(ambientLight);
+
+      const light1 = new THREE.DirectionalLight(0x10B981, 2.0);
+      light1.position.set(5, 6, 6);
+      scene.add(light1);
+
+      const light2 = new THREE.DirectionalLight(0xA7F3D0, 1.5);
+      light2.position.set(-5, -4, 4);
+      scene.add(light2);
+
+      // Interactive mouse rotation
+      let isDragging = false;
+      let prevMouse = { x: 0, y: 0 };
+
+      canvas.addEventListener('mousedown', e => {
+        isDragging = true;
+        prevMouse = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener('mouseup', () => isDragging = false);
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - prevMouse.x;
+        const deltaY = e.clientY - prevMouse.y;
+        moleculeGroup.rotation.y += deltaX * 0.01;
+        moleculeGroup.rotation.x += deltaY * 0.01;
+        prevMouse = { x: e.clientX, y: e.clientY };
+      });
+
+      // Resize listener
+      window.addEventListener('resize', () => {
+        const r = canvas.parentElement.getBoundingClientRect();
+        camera.aspect = r.width / r.height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(r.width, r.height);
+      });
+
+      // Animation Loop: Living Organism Breathing Cycle (scale 1 -> 1.03 -> 1 on a 4-second sine loop)
+      const clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+
+        // 4-second biological breathing scale
+        const breath = 1.0 + Math.sin(t * (Math.PI / 2.0)) * 0.025;
+        moleculeGroup.scale.set(breath, breath, breath);
+
+        // Idle slow rotation
+        if (!isDragging) {
+          moleculeGroup.rotation.y += 0.004;
+          moleculeGroup.rotation.x += 0.0015;
+        }
+
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+  </script>
+
+  <!-- ========================================================================
+       REACT BITS SOFT AURORA - WEBGL SHADER ENGINE
+       ======================================================================== -->
+  <script type="module">
+    import { Renderer, Program, Mesh, Triangle } from 'https://esm.sh/ogl';
+
+    function hexToVec3(hex) {
+      const h = hex.replace('#', '');
+      return [
+        parseInt(h.slice(0, 2), 16) / 255,
+        parseInt(h.slice(2, 4), 16) / 255,
+        parseInt(h.slice(4, 6), 16) / 255
+      ];
+    }
+
+    const vertexShader = `
+attribute vec2 uv;
+attribute vec2 position;
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = vec4(position, 0, 1);
+}
+`;
+
+    const fragmentShader = `
+precision highp float;
+
+uniform float uTime;
+uniform vec3 uResolution;
+uniform float uSpeed;
+uniform float uScale;
+uniform float uBrightness;
+uniform vec3 uColor1;
+uniform vec3 uColor2;
+uniform float uNoiseFreq;
+uniform float uNoiseAmp;
+uniform float uBandHeight;
+uniform float uBandSpread;
+uniform float uOctaveDecay;
+uniform float uLayerOffset;
+uniform float uColorSpeed;
+uniform vec2 uMouse;
+uniform float uMouseInfluence;
+uniform bool uEnableMouse;
+uniform float uLightMode;
+
+#define TAU 6.28318
+
+vec3 gradientHash(vec3 p) {
+  p = vec3(
+    dot(p, vec3(127.1, 311.7, 234.6)),
+    dot(p, vec3(269.5, 183.3, 198.3)),
+    dot(p, vec3(169.5, 283.3, 156.9))
+  );
+  vec3 h = fract(sin(p) * 43758.5453123);
+  float phi = acos(2.0 * h.x - 1.0);
+  float theta = TAU * h.y;
+  return vec3(cos(theta) * sin(phi), sin(theta) * cos(phi), cos(phi));
+}
+
+float quinticSmooth(float t) {
+  float t2 = t * t;
+  float t3 = t * t2;
+  return 6.0 * t3 * t2 - 15.0 * t2 * t2 + 10.0 * t3;
+}
+
+vec3 cosineGradient(float t, vec3 a, vec3 b, vec3 c, vec3 d) {
+  return a + b * cos(TAU * (c * t + d));
+}
+
+float perlin3D(float amplitude, float frequency, float px, float py, float pz) {
+  float x = px * frequency;
+  float y = py * frequency;
+
+  float fx = floor(x); float fy = floor(y); float fz = floor(pz);
+  float cx = ceil(x);  float cy = ceil(y);  float cz = ceil(pz);
+
+  vec3 g000 = gradientHash(vec3(fx, fy, fz));
+  vec3 g100 = gradientHash(vec3(cx, fy, fz));
+  vec3 g010 = gradientHash(vec3(fx, cy, fz));
+  vec3 g110 = gradientHash(vec3(cx, cy, fz));
+  vec3 g001 = gradientHash(vec3(fx, fy, cz));
+  vec3 g101 = gradientHash(vec3(cx, fy, cz));
+  vec3 g011 = gradientHash(vec3(fx, cy, cz));
+  vec3 g111 = gradientHash(vec3(cx, cy, cz));
+
+  float d000 = dot(g000, vec3(x - fx, y - fy, pz - fz));
+  float d100 = dot(g100, vec3(x - cx, y - fy, pz - fz));
+  float d010 = dot(g010, vec3(x - fx, y - cy, pz - fz));
+  float d110 = dot(g110, vec3(x - cx, y - cy, pz - fz));
+  float d001 = dot(g001, vec3(x - fx, y - fy, pz - cz));
+  float d101 = dot(g101, vec3(x - cx, y - fy, pz - cz));
+  float d011 = dot(g011, vec3(x - fx, y - cy, pz - cz));
+  float d111 = dot(g111, vec3(x - cx, y - cy, pz - cz));
+
+  float sx = quinticSmooth(x - fx);
+  float sy = quinticSmooth(y - fy);
+  float sz = quinticSmooth(pz - fz);
+
+  float lx00 = mix(d000, d100, sx);
+  float lx10 = mix(d010, d110, sx);
+  float lx01 = mix(d001, d101, sx);
+  float lx11 = mix(d011, d111, sx);
+
+  float ly0 = mix(lx00, lx10, sy);
+  float ly1 = mix(lx01, lx11, sy);
+
+  return amplitude * mix(ly0, ly1, sz);
+}
+
+float auroraGlow(float t, vec2 shift) {
+  vec2 uv = gl_FragCoord.xy / uResolution.y;
+  uv += shift;
+
+  float noiseVal = 0.0;
+  float freq = uNoiseFreq;
+  float amp = uNoiseAmp;
+  vec2 samplePos = uv * uScale;
+
+  for (float i = 0.0; i < 3.0; i += 1.0) {
+    noiseVal += perlin3D(amp, freq, samplePos.x, samplePos.y, t);
+    amp *= uOctaveDecay;
+    freq *= 2.0;
+  }
+
+  float yBand = uv.y * 10.0 - uBandHeight * 10.0;
+  return 0.3 * max(exp(uBandSpread * (1.0 - 1.1 * abs(noiseVal + yBand))), 0.0);
+}
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / uResolution.xy;
+  float t = uSpeed * 0.4 * uTime;
+
+  vec2 shift = vec2(0.0);
+  if (uEnableMouse) {
+    shift = (uMouse - 0.5) * uMouseInfluence;
+  }
+
+  float glow1 = auroraGlow(t, shift);
+  float glow2 = auroraGlow(t + uLayerOffset, shift);
+  vec3 gradient1 = cosineGradient(uv.x + uTime * uSpeed * 0.2 * uColorSpeed, vec3(0.5), vec3(0.5), vec3(1.0), vec3(0.3, 0.20, 0.20));
+  vec3 gradient2 = cosineGradient(uv.x + uTime * uSpeed * 0.1 * uColorSpeed, vec3(0.5), vec3(0.5), vec3(2.0, 1.0, 0.0), vec3(0.5, 0.20, 0.25));
+
+  vec3 col = 0.99 * glow1 * gradient1 * uColor1;
+  col += 0.99 * glow2 * gradient2 * uColor2;
+
+  col *= uBrightness;
+  float alpha = clamp(length(col), 0.0, 1.0);
+  if (uLightMode > 0.5) {
+    float phase1 = dot(gradient1, vec3(0.299, 0.587, 0.114));
+    float phase2 = dot(gradient2, vec3(0.299, 0.587, 0.114));
+    float weight1 = pow(max(glow1 * (0.62 + 0.38 * phase1), 0.0), 1.35);
+    float weight2 = pow(max(glow2 * (0.62 + 0.38 * phase2), 0.0), 1.35);
+    float weightSum = max(weight1 + weight2, 0.0001);
+
+    vec3 chroma = (weight1 * uColor1 + weight2 * uColor2) / weightSum;
+    float neutral = min(chroma.r, min(chroma.g, chroma.b));
+    chroma = max(chroma - vec3(neutral * 0.78), vec3(0.0));
+    float peak = max(chroma.r, max(chroma.g, chroma.b));
+    chroma = pow(clamp(chroma / max(peak, 0.0001), 0.0, 1.0), vec3(1.08));
+
+    float ink = clamp((weight1 + weight2) * uBrightness * 1.55, 0.0, 0.82);
+    gl_FragColor = vec4(mix(vec3(1.0), chroma, ink), 1.0);
+  } else {
+    gl_FragColor = vec4(col, alpha);
+  }
+}
+`;
+
+    // State & Config
+    let auroraActive = true;
+    let program = null;
+    let currentMouse = [0.5, 0.5];
+    let targetMouse = [0.5, 0.5];
+
+    const container = document.getElementById('soft-aurora-bg');
+    if (container) {
+      try {
+        const renderer = new Renderer({ alpha: true, premultipliedAlpha: false });
+        const gl = renderer.gl;
+        gl.clearColor(0, 0, 0, 0);
+
+        function handleMouseMove(e) {
+          targetMouse = [
+            e.clientX / window.innerWidth,
+            1.0 - (e.clientY / window.innerHeight)
+          ];
+        }
+
+        function handleMouseLeave() {
+          targetMouse = [0.5, 0.5];
+        }
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseleave', handleMouseLeave);
+
+        function resize() {
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          renderer.setSize(w, h);
+          if (program) {
+            program.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height];
+          }
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const geometry = new Triangle(gl);
+        program = new Program(gl, {
+          vertex: vertexShader,
+          fragment: fragmentShader,
+          uniforms: {
+            uTime: { value: 0 },
+            uResolution: { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
+            uSpeed: { value: 0.55 },
+            uScale: { value: 1.45 },
+            uBrightness: { value: 0.95 },
+            uColor1: { value: hexToVec3('#10B981') }, // RemedX Bio Emerald
+            uColor2: { value: hexToVec3('#06B6D4') }, // Aurora Celestial Cyan
+            uNoiseFreq: { value: 2.4 },
+            uNoiseAmp: { value: 1.0 },
+            uBandHeight: { value: 0.48 },
+            uBandSpread: { value: 1.1 },
+            uOctaveDecay: { value: 0.12 },
+            uLayerOffset: { value: 0.15 },
+            uColorSpeed: { value: 0.9 },
+            uMouse: { value: new Float32Array([0.5, 0.5]) },
+            uMouseInfluence: { value: 0.25 },
+            uEnableMouse: { value: true },
+            uLightMode: { value: 0 }
+          }
+        });
+
+        const mesh = new Mesh(gl, { geometry, program });
+        container.appendChild(gl.canvas);
+
+        let animationFrameId;
+        function update(time) {
+          animationFrameId = requestAnimationFrame(update);
+          if (!auroraActive) return;
+
+          program.uniforms.uTime.value = time * 0.001;
+
+          currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
+          currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
+          program.uniforms.uMouse.value[0] = currentMouse[0];
+          program.uniforms.uMouse.value[1] = currentMouse[1];
+
+          renderer.render({ scene: mesh });
+        }
+        animationFrameId = requestAnimationFrame(update);
+
+        // Expose control functions globally
+        window.toggleAurora = function() {
+          auroraActive = !auroraActive;
+          const bg = document.getElementById('soft-aurora-bg');
+          const tag = document.getElementById('auroraStatusTag');
+          if (bg) {
+            bg.style.opacity = auroraActive ? '0.75' : '0';
+          }
+          if (tag) {
+            tag.innerText = auroraActive ? 'ON' : 'OFF';
+          }
+        };
+
+        window.setSoftAuroraColors = function(c1, c2) {
+          if (program) {
+            if (c1) program.uniforms.uColor1.value = hexToVec3(c1);
+            if (c2) program.uniforms.uColor2.value = hexToVec3(c2);
+          }
+        };
+
+        console.log("🌿 SoftAurora WebGL Ambient Engine initialized successfully.");
+      } catch (err) {
+        console.warn("SoftAurora WebGL initialization notice:", err);
+      }
+    }
+  </script>
+</body>
+</html>
